@@ -4,7 +4,7 @@ Datalogger
 Temperature and humditiy data logging
 
 
-The Radio Data Logger project is based on the LUFA TempDataLogger Demo project.
+The Radio Data Logger project is based on the LUFA TempDataLogger Demo project and published in Funkamateur 5/2012.
 
    The project is a data logger for the current local temperature and humidity and additional two radio sensors for logging
    of distantly temperatures, writing the  measured values to a file stored on the board's Dataflash in a FAT filesystem each
@@ -16,7 +16,7 @@ The Radio Data Logger project is based on the LUFA TempDataLogger Demo project.
  
    A DS1307 or compatible RTC IC is designed to be attached to the AVR's TWI bus, for the management of timestamps on the
    sampled data. This project will not function correctly if the RTC chip is omitted unless the DUMMY_RTC compile time token
-   is specified - see \ref SSec_Options.
+   is specified.
    
    A HTY371 sensor from Hygrosens is connected to the AVR's TWI bus for the measurement of local temperature and humidity.
    
