@@ -1,0 +1,284 @@
+   1               		.file	"HYT321.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               		.section	.text.HYT321_GetData,"ax",@progbits
+  17               	.global	HYT321_GetData
+  19               	HYT321_GetData:
+  20               	.LFB15:
+  21               	.LSM0:
+  22               	.LVL0:
+  23 0000 6F92      		push r6
+  24 0002 7F92      		push r7
+  25 0004 9F92      		push r9
+  26 0006 AF92      		push r10
+  27 0008 BF92      		push r11
+  28 000a CF92      		push r12
+  29 000c DF92      		push r13
+  30 000e EF92      		push r14
+  31 0010 FF92      		push r15
+  32 0012 0F93      		push r16
+  33 0014 1F93      		push r17
+  34 0016 CF93      		push r28
+  35 0018 DF93      		push r29
+  36               	/* prologue: function */
+  37               	/* frame size = 0 */
+  38 001a EC01      		movw r28,r24
+  39 001c 3B01      		movw r6,r22
+  40               	.LSM1:
+  41 001e 80E5      		ldi r24,lo8(80)
+  42               	.LVL1:
+  43 0020 6AE0      		ldi r22,lo8(10)
+  44               	.LVL2:
+  45 0022 0E94 0000 		call TWI_StartTransmission
+  46 0026 8823      		tst r24
+  47 0028 01F0      		breq .L2
+  48               	.LBB24:
+  49               	.LBB25:
+  50               	.LSM2:
+  51 002a 84E9      		ldi r24,lo8(-108)
+  52 002c 8093 BC00 		sts 188,r24
+  53               	.L2:
+  54               	.LBE25:
+  55               	.LBE24:
+  56               	.LBB26:
+  57               	.LBB27:
+  58               	.LBB28:
+  59               	.LBB29:
+  60               	.LSM3:
+  61 0030 80E2      		ldi r24,lo8(20000)
+  62 0032 9EE4      		ldi r25,hi8(20000)
+  63               	.LVL3:
+  64               	/* #APP */
+  65               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+  66 0034 0197      		1: sbiw r24,1
+  67 0036 01F4      		brne 1b
+  68               	 ;  0 "" 2
+  69               	/* #NOAPP */
+  70               	.LBE29:
+  71               	.LBE28:
+  72               	.LBE27:
+  73               	.LBE26:
+  74               	.LSM4:
+  75 0038 81E5      		ldi r24,lo8(81)
+  76               	.LVL4:
+  77 003a 6AE0      		ldi r22,lo8(10)
+  78 003c 0E94 0000 		call TWI_StartTransmission
+  79 0040 8823      		tst r24
+  80 0042 01F4      		brne .+2
+  81 0044 00C0      		rjmp .L15
+  82               	.LBB30:
+  83               	.LBB31:
+  84               	.LSM5:
+  85 0046 84EC      		ldi r24,lo8(-60)
+  86 0048 8093 BC00 		sts 188,r24
+  87               	.L5:
+  88               	.LSM6:
+  89 004c 8091 BC00 		lds r24,188
+  90 0050 87FF      		sbrs r24,7
+  91 0052 00C0      		rjmp .L5
+  92               	.LSM7:
+  93 0054 9091 BB00 		lds r25,187
+  94               	.LSM8:
+  95 0058 8091 B900 		lds r24,185
+  96               	.LBE31:
+  97               	.LBE30:
+  98               	.LBB32:
+  99               	.LBB33:
+ 100               	.LSM9:
+ 101 005c 84EC      		ldi r24,lo8(-60)
+ 102 005e 8093 BC00 		sts 188,r24
+ 103               	.L6:
+ 104               	.LSM10:
+ 105 0062 8091 BC00 		lds r24,188
+ 106 0066 87FF      		sbrs r24,7
+ 107 0068 00C0      		rjmp .L6
+ 108               	.LSM11:
+ 109 006a 2091 BB00 		lds r18,187
+ 110               	.LSM12:
+ 111 006e 8091 B900 		lds r24,185
+ 112               	.LBE33:
+ 113               	.LBE32:
+ 114               	.LBB34:
+ 115               	.LBB35:
+ 116               	.LSM13:
+ 117 0072 84EC      		ldi r24,lo8(-60)
+ 118 0074 8093 BC00 		sts 188,r24
+ 119               	.L7:
+ 120               	.LSM14:
+ 121 0078 8091 BC00 		lds r24,188
+ 122 007c 87FF      		sbrs r24,7
+ 123 007e 00C0      		rjmp .L7
+ 124               	.LSM15:
+ 125 0080 6091 BB00 		lds r22,187
+ 126               	.LSM16:
+ 127 0084 8091 B900 		lds r24,185
+ 128               	.LBE35:
+ 129               	.LBE34:
+ 130               	.LBB36:
+ 131               	.LBB37:
+ 132               	.LSM17:
+ 133 0088 84E8      		ldi r24,lo8(-124)
+ 134 008a 8093 BC00 		sts 188,r24
+ 135               	.L8:
+ 136               	.LSM18:
+ 137 008e 8091 BC00 		lds r24,188
+ 138 0092 87FF      		sbrs r24,7
+ 139 0094 00C0      		rjmp .L8
+ 140               	.LSM19:
+ 141 0096 9090 BB00 		lds r9,187
+ 142               	.LVL5:
+ 143               	.LSM20:
+ 144 009a 8091 B900 		lds r24,185
+ 145               	.LBE37:
+ 146               	.LBE36:
+ 147               	.LBB38:
+ 148               	.LBB39:
+ 149               	.LSM21:
+ 150 009e 84E9      		ldi r24,lo8(-108)
+ 151 00a0 8093 BC00 		sts 188,r24
+ 152 00a4 30E0      		ldi r19,lo8(0)
+ 153 00a6 40E0      		ldi r20,lo8(0)
+ 154 00a8 50E0      		ldi r21,hi8(0)
+ 155 00aa A62E      		mov r10,r22
+ 156 00ac BB24      		clr r11
+ 157 00ae CC24      		clr r12
+ 158 00b0 DD24      		clr r13
+ 159 00b2 AA0C      		lsl r10
+ 160 00b4 BB1C      		rol r11
+ 161 00b6 CC1C      		rol r12
+ 162 00b8 DD1C      		rol r13
+ 163 00ba AA0C      		lsl r10
+ 164 00bc BB1C      		rol r11
+ 165 00be CC1C      		rol r12
+ 166 00c0 DD1C      		rol r13
+ 167 00c2 AA0C      		lsl r10
+ 168 00c4 BB1C      		rol r11
+ 169 00c6 CC1C      		rol r12
+ 170 00c8 DD1C      		rol r13
+ 171 00ca AA0C      		lsl r10
+ 172 00cc BB1C      		rol r11
+ 173 00ce CC1C      		rol r12
+ 174 00d0 DD1C      		rol r13
+ 175 00d2 AA0C      		lsl r10
+ 176 00d4 BB1C      		rol r11
+ 177 00d6 CC1C      		rol r12
+ 178 00d8 DD1C      		rol r13
+ 179 00da AA0C      		lsl r10
+ 180 00dc BB1C      		rol r11
+ 181 00de CC1C      		rol r12
+ 182 00e0 DD1C      		rol r13
+ 183               	.L4:
+ 184               	.LBE39:
+ 185               	.LBE38:
+ 186               	.LSM22:
+ 187 00e2 9F73      		andi r25,lo8(63)
+ 188               	.LVL6:
+ 189 00e4 892F      		mov r24,r25
+ 190 00e6 90E0      		ldi r25,lo8(0)
+ 191               	.LVL7:
+ 192 00e8 A0E0      		ldi r26,lo8(0)
+ 193 00ea B0E0      		ldi r27,hi8(0)
+ 194 00ec BA2F      		mov r27,r26
+ 195 00ee A92F      		mov r26,r25
+ 196 00f0 982F      		mov r25,r24
+ 197 00f2 8827      		clr r24
+ 198 00f4 280F      		add r18,r24
+ 199 00f6 391F      		adc r19,r25
+ 200 00f8 4A1F      		adc r20,r26
+ 201 00fa 5B1F      		adc r21,r27
+ 202 00fc CA01      		movw r24,r20
+ 203 00fe B901      		movw r22,r18
+ 204 0100 24E6      		ldi r18,lo8(100)
+ 205 0102 30E0      		ldi r19,hi8(100)
+ 206 0104 40E0      		ldi r20,hlo8(100)
+ 207 0106 50E0      		ldi r21,hhi8(100)
+ 208 0108 0E94 0000 		call __mulsi3
+ 209 010c 7B01      		movw r14,r22
+ 210 010e 8C01      		movw r16,r24
+ 211               	.LSM23:
+ 212 0110 9694      		lsr r9
+ 213 0112 9694      		lsr r9
+ 214 0114 A90C      		add r10,r9
+ 215 0116 B11C      		adc r11,__zero_reg__
+ 216 0118 C11C      		adc r12,__zero_reg__
+ 217 011a D11C      		adc r13,__zero_reg__
+ 218 011c C601      		movw r24,r12
+ 219 011e B501      		movw r22,r10
+ 220 0120 25EA      		ldi r18,lo8(165)
+ 221 0122 30E0      		ldi r19,hi8(165)
+ 222 0124 40E0      		ldi r20,hlo8(165)
+ 223 0126 50E0      		ldi r21,hhi8(165)
+ 224 0128 0E94 0000 		call __mulsi3
+ 225 012c 20E0      		ldi r18,lo8(16384)
+ 226 012e 30E4      		ldi r19,hi8(16384)
+ 227 0130 40E0      		ldi r20,hlo8(16384)
+ 228 0132 50E0      		ldi r21,hhi8(16384)
+ 229 0134 0E94 0000 		call __divmodsi4
+ 230 0138 C901      		movw r24,r18
+ 231 013a DA01      		movw r26,r20
+ 232               	.LSM24:
+ 233 013c 2EE0      		ldi r18,14
+ 234 013e 1695      	1:	lsr r17
+ 235 0140 0795      		ror r16
+ 236 0142 F794      		ror r15
+ 237 0144 E794      		ror r14
+ 238 0146 2A95      		dec r18
+ 239 0148 01F4      		brne 1b
+ 240 014a E882      		st Y,r14
+ 241               	.LSM25:
+ 242 014c 8897      		sbiw r24,40
+ 243 014e A109      		sbc r26,__zero_reg__
+ 244 0150 B109      		sbc r27,__zero_reg__
+ 245 0152 F301      		movw r30,r6
+ 246 0154 8083      		st Z,r24
+ 247               	/* epilogue start */
+ 248               	.LSM26:
+ 249 0156 DF91      		pop r29
+ 250 0158 CF91      		pop r28
+ 251               	.LVL8:
+ 252 015a 1F91      		pop r17
+ 253 015c 0F91      		pop r16
+ 254 015e FF90      		pop r15
+ 255 0160 EF90      		pop r14
+ 256 0162 DF90      		pop r13
+ 257 0164 CF90      		pop r12
+ 258 0166 BF90      		pop r11
+ 259 0168 AF90      		pop r10
+ 260 016a 9F90      		pop r9
+ 261               	.LVL9:
+ 262 016c 7F90      		pop r7
+ 263 016e 6F90      		pop r6
+ 264               	.LVL10:
+ 265 0170 0895      		ret
+ 266               	.LVL11:
+ 267               	.L15:
+ 268               	.LSM27:
+ 269 0172 20E0      		ldi r18,lo8(0)
+ 270 0174 30E0      		ldi r19,hi8(0)
+ 271 0176 40E0      		ldi r20,hlo8(0)
+ 272 0178 50E0      		ldi r21,hhi8(0)
+ 273 017a AA24      		clr r10
+ 274 017c BB24      		clr r11
+ 275 017e 6501      		movw r12,r10
+ 276 0180 00C0      		rjmp .L4
+ 277               	.LFE15:
+ 303               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 HYT321.c
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:2      *ABS*:0000003f __SREG__
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:3      *ABS*:0000003e __SP_H__
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:4      *ABS*:0000003d __SP_L__
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:5      *ABS*:00000034 __CCP__
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\Kai\AppData\Local\Temp/ccJ8PbKl.s:19     .text.HYT321_GetData:00000000 HYT321_GetData
+
+UNDEFINED SYMBOLS
+TWI_StartTransmission
+__mulsi3
+__divmodsi4

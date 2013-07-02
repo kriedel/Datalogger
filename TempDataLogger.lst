@@ -1,0 +1,3345 @@
+   1               		.file	"TempDataLogger.c"
+   2               	__SREG__ = 0x3f
+   3               	__SP_H__ = 0x3e
+   4               	__SP_L__ = 0x3d
+   5               	__CCP__  = 0x34
+   6               	__tmp_reg__ = 0
+   7               	__zero_reg__ = 1
+  15               	.Ltext0:
+  16               		.data
+  17               	.LC0:
+  18 0000 436F 6E66 		.string	"Config new..."
+  18      6967 206E 
+  18      6577 2E2E 
+  18      2E00 
+  19               		.section	.text.CALLBACK_HID_Device_ProcessHIDReport,"ax",@progbits
+  20               	.global	CALLBACK_HID_Device_ProcessHIDReport
+  22               	CALLBACK_HID_Device_ProcessHIDReport:
+  23               	.LFB147:
+  24               	.LSM0:
+  25               	.LVL0:
+  26 0000 CF93      		push r28
+  27 0002 DF93      		push r29
+  28               	/* prologue: function */
+  29               	/* frame size = 0 */
+  30               	.LSM1:
+  31 0004 E901      		movw r28,r18
+  32               	.LVL1:
+  33               	.LSM2:
+  34 0006 8881      		ld r24,Y
+  35               	.LVL2:
+  36 0008 6981      		ldd r22,Y+1
+  37               	.LVL3:
+  38 000a 4A81      		ldd r20,Y+2
+  39               	.LVL4:
+  40 000c 0E94 0000 		call DS1307_SetDate
+  41               	.LSM3:
+  42 0010 8B81      		ldd r24,Y+3
+  43 0012 6C81      		ldd r22,Y+4
+  44 0014 4D81      		ldd r20,Y+5
+  45 0016 0E94 0000 		call DS1307_SetTime
+  46               	.LSM4:
+  47 001a 6E81      		ldd r22,Y+6
+  48 001c 7F81      		ldd r23,Y+7
+  49 001e 8091 0000 		lds r24,LoggingInterval500MS_SRAM
+  50 0022 9091 0000 		lds r25,(LoggingInterval500MS_SRAM)+1
+  51 0026 8617      		cp r24,r22
+  52 0028 9707      		cpc r25,r23
+  53 002a 01F0      		breq .L2
+  54               	.LSM5:
+  55 002c 7093 0000 		sts (LoggingInterval500MS_SRAM)+1,r23
+  56 0030 6093 0000 		sts LoggingInterval500MS_SRAM,r22
+  57               	.LSM6:
+  58 0034 80E0      		ldi r24,lo8(LoggingInterval500MS_EEPROM)
+  59 0036 90E0      		ldi r25,hi8(LoggingInterval500MS_EEPROM)
+  60 0038 0E94 0000 		call __eeupd_word_usb1287
+  61               	.L2:
+  62               	.LSM7:
+  63 003c 6885      		ldd r22,Y+8
+  64 003e 8091 0000 		lds r24,Sensor1Correction_SRAM
+  65 0042 9927      		clr r25
+  66 0044 87FD      		sbrc r24,7
+  67 0046 9095      		com r25
+  68 0048 262F      		mov r18,r22
+  69 004a 30E0      		ldi r19,lo8(0)
+  70 004c 8217      		cp r24,r18
+  71 004e 9307      		cpc r25,r19
+  72 0050 01F0      		breq .L3
+  73               	.LSM8:
+  74 0052 6093 0000 		sts Sensor1Correction_SRAM,r22
+  75               	.LSM9:
+  76 0056 80E0      		ldi r24,lo8(Sensor1Correction_EEPROM)
+  77 0058 90E0      		ldi r25,hi8(Sensor1Correction_EEPROM)
+  78 005a 0E94 0000 		call __eeupd_byte_usb1287
+  79               	.L3:
+  80               	.LSM10:
+  81 005e 6985      		ldd r22,Y+9
+  82 0060 8091 0000 		lds r24,Sensor2Correction_SRAM
+  83 0064 9927      		clr r25
+  84 0066 87FD      		sbrc r24,7
+  85 0068 9095      		com r25
+  86 006a 262F      		mov r18,r22
+  87 006c 30E0      		ldi r19,lo8(0)
+  88 006e 8217      		cp r24,r18
+  89 0070 9307      		cpc r25,r19
+  90 0072 01F0      		breq .L4
+  91               	.LSM11:
+  92 0074 6093 0000 		sts Sensor2Correction_SRAM,r22
+  93               	.LSM12:
+  94 0078 80E0      		ldi r24,lo8(Sensor2Correction_EEPROM)
+  95 007a 90E0      		ldi r25,hi8(Sensor2Correction_EEPROM)
+  96 007c 0E94 0000 		call __eeupd_byte_usb1287
+  97               	.L4:
+  98               	.LSM13:
+  99 0080 6A85      		ldd r22,Y+10
+ 100 0082 8091 0000 		lds r24,Sensor3Correction_SRAM
+ 101 0086 9927      		clr r25
+ 102 0088 87FD      		sbrc r24,7
+ 103 008a 9095      		com r25
+ 104 008c 262F      		mov r18,r22
+ 105 008e 30E0      		ldi r19,lo8(0)
+ 106 0090 8217      		cp r24,r18
+ 107 0092 9307      		cpc r25,r19
+ 108 0094 01F0      		breq .L5
+ 109               	.LSM14:
+ 110 0096 6093 0000 		sts Sensor3Correction_SRAM,r22
+ 111               	.LSM15:
+ 112 009a 80E0      		ldi r24,lo8(Sensor3Correction_EEPROM)
+ 113 009c 90E0      		ldi r25,hi8(Sensor3Correction_EEPROM)
+ 114 009e 0E94 0000 		call __eeupd_byte_usb1287
+ 115               	.L5:
+ 116               	.LSM16:
+ 117 00a2 69A5      		ldd r22,Y+41
+ 118 00a4 7AA5      		ldd r23,Y+42
+ 119 00a6 8091 0000 		lds r24,DaysLeft_SRAM
+ 120 00aa 9091 0000 		lds r25,(DaysLeft_SRAM)+1
+ 121 00ae 8617      		cp r24,r22
+ 122 00b0 9707      		cpc r25,r23
+ 123 00b2 01F0      		breq .L6
+ 124               	.LSM17:
+ 125 00b4 7093 0000 		sts (DaysLeft_SRAM)+1,r23
+ 126 00b8 6093 0000 		sts DaysLeft_SRAM,r22
+ 127               	.LSM18:
+ 128 00bc 80E0      		ldi r24,lo8(DaysLeft_EEPROM)
+ 129 00be 90E0      		ldi r25,hi8(DaysLeft_EEPROM)
+ 130 00c0 0E94 0000 		call __eeupd_word_usb1287
+ 131               	.L6:
+ 132               	.LSM19:
+ 133 00c4 0E94 0000 		call lcd_clear
+ 134               	.LSM20:
+ 135 00c8 A0E0      		ldi r26,lo8(Sensor1Name_SRAM)
+ 136 00ca B0E0      		ldi r27,hi8(Sensor1Name_SRAM)
+ 137 00cc FE01      		movw r30,r28
+ 138 00ce 3D96      		adiw r30,13
+ 139 00d0 88E0      		ldi r24,lo8(8)
+ 140               	.L7:
+ 141 00d2 0190      		ld r0,Z+
+ 142 00d4 0D92      		st X+,r0
+ 143 00d6 8150      		subi r24,lo8(-(-1))
+ 144 00d8 01F4      		brne .L7
+ 145               	.LSM21:
+ 146 00da 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 147 00dc 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 148 00de 60E0      		ldi r22,lo8(Sensor1Name_EEPROM)
+ 149 00e0 70E0      		ldi r23,hi8(Sensor1Name_EEPROM)
+ 150 00e2 48E0      		ldi r20,lo8(8)
+ 151 00e4 50E0      		ldi r21,hi8(8)
+ 152 00e6 0E94 0000 		call __eeupd_block_usb1287
+ 153               	.LSM22:
+ 154 00ea 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 155 00ec 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 156 00ee 0E94 0000 		call lcd_print_str
+ 157               	.LSM23:
+ 158 00f2 A0E0      		ldi r26,lo8(Sensor2Name_SRAM)
+ 159 00f4 B0E0      		ldi r27,hi8(Sensor2Name_SRAM)
+ 160 00f6 FE01      		movw r30,r28
+ 161 00f8 7596      		adiw r30,21
+ 162 00fa 88E0      		ldi r24,lo8(8)
+ 163               	.L8:
+ 164 00fc 0190      		ld r0,Z+
+ 165 00fe 0D92      		st X+,r0
+ 166 0100 8150      		subi r24,lo8(-(-1))
+ 167 0102 01F4      		brne .L8
+ 168               	.LSM24:
+ 169 0104 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 170 0106 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 171 0108 60E0      		ldi r22,lo8(Sensor2Name_EEPROM)
+ 172 010a 70E0      		ldi r23,hi8(Sensor2Name_EEPROM)
+ 173 010c 48E0      		ldi r20,lo8(8)
+ 174 010e 50E0      		ldi r21,hi8(8)
+ 175 0110 0E94 0000 		call __eeupd_block_usb1287
+ 176               	.LSM25:
+ 177 0114 82E0      		ldi r24,lo8(2)
+ 178 0116 90E0      		ldi r25,hi8(2)
+ 179 0118 61E0      		ldi r22,lo8(1)
+ 180 011a 70E0      		ldi r23,hi8(1)
+ 181 011c 0E94 0000 		call lcd_pos
+ 182               	.LSM26:
+ 183 0120 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 184 0122 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 185 0124 0E94 0000 		call lcd_print_str
+ 186               	.LSM27:
+ 187 0128 A0E0      		ldi r26,lo8(Sensor3Name_SRAM)
+ 188 012a B0E0      		ldi r27,hi8(Sensor3Name_SRAM)
+ 189 012c FE01      		movw r30,r28
+ 190 012e 7D96      		adiw r30,29
+ 191 0130 88E0      		ldi r24,lo8(8)
+ 192               	.L9:
+ 193 0132 0190      		ld r0,Z+
+ 194 0134 0D92      		st X+,r0
+ 195 0136 8150      		subi r24,lo8(-(-1))
+ 196 0138 01F4      		brne .L9
+ 197               	.LSM28:
+ 198 013a 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 199 013c 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 200 013e 60E0      		ldi r22,lo8(Sensor3Name_EEPROM)
+ 201 0140 70E0      		ldi r23,hi8(Sensor3Name_EEPROM)
+ 202 0142 48E0      		ldi r20,lo8(8)
+ 203 0144 50E0      		ldi r21,hi8(8)
+ 204 0146 0E94 0000 		call __eeupd_block_usb1287
+ 205               	.LSM29:
+ 206 014a 83E0      		ldi r24,lo8(3)
+ 207 014c 90E0      		ldi r25,hi8(3)
+ 208 014e 61E0      		ldi r22,lo8(1)
+ 209 0150 70E0      		ldi r23,hi8(1)
+ 210 0152 0E94 0000 		call lcd_pos
+ 211               	.LSM30:
+ 212 0156 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 213 0158 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 214 015a 0E94 0000 		call lcd_print_str
+ 215               	.LSM31:
+ 216 015e 84E0      		ldi r24,lo8(4)
+ 217 0160 90E0      		ldi r25,hi8(4)
+ 218 0162 61E0      		ldi r22,lo8(1)
+ 219 0164 70E0      		ldi r23,hi8(1)
+ 220 0166 0E94 0000 		call lcd_pos
+ 221               	.LSM32:
+ 222 016a 80E0      		ldi r24,lo8(.LC0)
+ 223 016c 90E0      		ldi r25,hi8(.LC0)
+ 224 016e 0E94 0000 		call lcd_print_str
+ 225               	/* epilogue start */
+ 226               	.LSM33:
+ 227 0172 DF91      		pop r29
+ 228 0174 CF91      		pop r28
+ 229               	.LVL5:
+ 230 0176 0895      		ret
+ 231               	.LFE147:
+ 233               		.section	.text.CALLBACK_HID_Device_CreateHIDReport,"ax",@progbits
+ 234               	.global	CALLBACK_HID_Device_CreateHIDReport
+ 236               	CALLBACK_HID_Device_CreateHIDReport:
+ 237               	.LFB146:
+ 238               	.LSM34:
+ 239               	.LVL6:
+ 240 0000 EF92      		push r14
+ 241 0002 FF92      		push r15
+ 242 0004 0F93      		push r16
+ 243               	.LVL7:
+ 244 0006 1F93      		push r17
+ 245 0008 DF93      		push r29
+ 246 000a CF93      		push r28
+ 247 000c 00D0      		rcall .
+ 248 000e CDB7      		in r28,__SP_L__
+ 249 0010 DEB7      		in r29,__SP_H__
+ 250               	/* prologue: function */
+ 251               	/* frame size = 2 */
+ 252 0012 7801      		movw r14,r16
+ 253               	.LVL8:
+ 254               	.LSM35:
+ 255 0014 8901      		movw r16,r18
+ 256               	.LVL9:
+ 257               	.LSM36:
+ 258 0016 1982      		std Y+1,__zero_reg__
+ 259               	.LVL10:
+ 260               	.LSM37:
+ 261 0018 1A82      		std Y+2,__zero_reg__
+ 262               	.LVL11:
+ 263               	.LSM38:
+ 264 001a B901      		movw r22,r18
+ 265               	.LVL12:
+ 266 001c 6F5F      		subi r22,lo8(-(1))
+ 267 001e 7F4F      		sbci r23,hi8(-(1))
+ 268 0020 A901      		movw r20,r18
+ 269               	.LVL13:
+ 270 0022 4E5F      		subi r20,lo8(-(2))
+ 271 0024 5F4F      		sbci r21,hi8(-(2))
+ 272 0026 C901      		movw r24,r18
+ 273               	.LVL14:
+ 274 0028 0E94 0000 		call DS1307_GetDate
+ 275               	.LVL15:
+ 276               	.LSM39:
+ 277 002c B801      		movw r22,r16
+ 278               	.LVL16:
+ 279 002e 6C5F      		subi r22,lo8(-(4))
+ 280 0030 7F4F      		sbci r23,hi8(-(4))
+ 281 0032 A801      		movw r20,r16
+ 282 0034 4B5F      		subi r20,lo8(-(5))
+ 283 0036 5F4F      		sbci r21,hi8(-(5))
+ 284 0038 C801      		movw r24,r16
+ 285 003a 0396      		adiw r24,3
+ 286 003c 0E94 0000 		call DS1307_GetTime
+ 287               	.LSM40:
+ 288 0040 8091 0000 		lds r24,LoggingInterval500MS_SRAM
+ 289 0044 9091 0000 		lds r25,(LoggingInterval500MS_SRAM)+1
+ 290 0048 F801      		movw r30,r16
+ 291 004a 9783      		std Z+7,r25
+ 292 004c 8683      		std Z+6,r24
+ 293               	.LSM41:
+ 294 004e 8091 0000 		lds r24,Sensor1Correction_SRAM
+ 295 0052 8087      		std Z+8,r24
+ 296               	.LSM42:
+ 297 0054 8091 0000 		lds r24,Sensor2Correction_SRAM
+ 298 0058 8187      		std Z+9,r24
+ 299               	.LSM43:
+ 300 005a 8091 0000 		lds r24,Sensor3Correction_SRAM
+ 301 005e 8287      		std Z+10,r24
+ 302               	.LSM44:
+ 303 0060 CE01      		movw r24,r28
+ 304 0062 0296      		adiw r24,2
+ 305 0064 BE01      		movw r22,r28
+ 306 0066 6F5F      		subi r22,lo8(-(1))
+ 307 0068 7F4F      		sbci r23,hi8(-(1))
+ 308 006a 0E94 0000 		call HYT321_GetData
+ 309               	.LSM45:
+ 310 006e 8091 0000 		lds r24,Sensor1Correction_SRAM
+ 311 0072 9981      		ldd r25,Y+1
+ 312 0074 890F      		add r24,r25
+ 313 0076 F801      		movw r30,r16
+ 314 0078 8387      		std Z+11,r24
+ 315               	.LSM46:
+ 316 007a 8A81      		ldd r24,Y+2
+ 317 007c 8487      		std Z+12,r24
+ 318               	.LSM47:
+ 319 007e 8091 0000 		lds r24,FreeMemory
+ 320 0082 9091 0000 		lds r25,(FreeMemory)+1
+ 321 0086 A091 0000 		lds r26,(FreeMemory)+2
+ 322 008a B091 0000 		lds r27,(FreeMemory)+3
+ 323 008e 85A3      		std Z+37,r24
+ 324 0090 96A3      		std Z+38,r25
+ 325 0092 A7A3      		std Z+39,r26
+ 326 0094 B0A7      		std Z+40,r27
+ 327               	.LSM48:
+ 328 0096 D801      		movw r26,r16
+ 329 0098 1D96      		adiw r26,13
+ 330 009a E0E0      		ldi r30,lo8(Sensor1Name_SRAM)
+ 331 009c F0E0      		ldi r31,hi8(Sensor1Name_SRAM)
+ 332 009e 88E0      		ldi r24,lo8(8)
+ 333               	.LVL17:
+ 334               	.L15:
+ 335 00a0 0190      		ld r0,Z+
+ 336 00a2 0D92      		st X+,r0
+ 337 00a4 8150      		subi r24,lo8(-(-1))
+ 338 00a6 01F4      		brne .L15
+ 339               	.LSM49:
+ 340 00a8 D801      		movw r26,r16
+ 341 00aa 5596      		adiw r26,21
+ 342 00ac E0E0      		ldi r30,lo8(Sensor2Name_SRAM)
+ 343 00ae F0E0      		ldi r31,hi8(Sensor2Name_SRAM)
+ 344 00b0 88E0      		ldi r24,lo8(8)
+ 345               	.L16:
+ 346 00b2 0190      		ld r0,Z+
+ 347 00b4 0D92      		st X+,r0
+ 348 00b6 8150      		subi r24,lo8(-(-1))
+ 349 00b8 01F4      		brne .L16
+ 350               	.LSM50:
+ 351 00ba D801      		movw r26,r16
+ 352 00bc 5D96      		adiw r26,29
+ 353 00be E0E0      		ldi r30,lo8(Sensor3Name_SRAM)
+ 354 00c0 F0E0      		ldi r31,hi8(Sensor3Name_SRAM)
+ 355 00c2 88E0      		ldi r24,lo8(8)
+ 356               	.L17:
+ 357 00c4 0190      		ld r0,Z+
+ 358 00c6 0D92      		st X+,r0
+ 359 00c8 8150      		subi r24,lo8(-(-1))
+ 360 00ca 01F4      		brne .L17
+ 361               	.LSM51:
+ 362 00cc 8BE2      		ldi r24,lo8(43)
+ 363 00ce 90E0      		ldi r25,hi8(43)
+ 364 00d0 F701      		movw r30,r14
+ 365 00d2 9183      		std Z+1,r25
+ 366 00d4 8083      		st Z,r24
+ 367               	.LSM52:
+ 368 00d6 81E0      		ldi r24,lo8(1)
+ 369               	/* epilogue start */
+ 370 00d8 0F90      		pop __tmp_reg__
+ 371 00da 0F90      		pop __tmp_reg__
+ 372 00dc CF91      		pop r28
+ 373 00de DF91      		pop r29
+ 374 00e0 1F91      		pop r17
+ 375 00e2 0F91      		pop r16
+ 376               	.LVL18:
+ 377 00e4 FF90      		pop r15
+ 378 00e6 EF90      		pop r14
+ 379               	.LVL19:
+ 380 00e8 0895      		ret
+ 381               	.LFE146:
+ 383               		.section	.text.CALLBACK_MS_Device_SCSICommandReceived,"ax",@progbits
+ 384               	.global	CALLBACK_MS_Device_SCSICommandReceived
+ 386               	CALLBACK_MS_Device_SCSICommandReceived:
+ 387               	.LFB145:
+ 388               	.LSM53:
+ 389               	.LVL20:
+ 390               	/* prologue: function */
+ 391               	/* frame size = 0 */
+ 392               	.LBB81:
+ 393               	.LBB82:
+ 394               	.LSM54:
+ 395 0000 2BB1      		in r18,43-32
+ 396 0002 2F70      		andi r18,lo8(15)
+ 397 0004 2062      		ori r18,lo8(32)
+ 398 0006 2BB9      		out 43-32,r18
+ 399               	.LBE82:
+ 400               	.LBE81:
+ 401               	.LSM55:
+ 402 0008 0E94 0000 		call SCSI_DecodeSCSICommand
+ 403               	.LVL21:
+ 404               	.LBB83:
+ 405               	.LBB84:
+ 406               	.LSM56:
+ 407 000c 9BB1      		in r25,43-32
+ 408 000e 9F70      		andi r25,lo8(15)
+ 409 0010 9066      		ori r25,lo8(96)
+ 410 0012 9BB9      		out 43-32,r25
+ 411               	/* epilogue start */
+ 412               	.LBE84:
+ 413               	.LBE83:
+ 414               	.LSM57:
+ 415 0014 0895      		ret
+ 416               	.LFE145:
+ 418               		.section	.text.EVENT_USB_Device_ControlRequest,"ax",@progbits
+ 419               	.global	EVENT_USB_Device_ControlRequest
+ 421               	EVENT_USB_Device_ControlRequest:
+ 422               	.LFB144:
+ 423               	.LSM58:
+ 424               	/* prologue: function */
+ 425               	/* frame size = 0 */
+ 426               	.LSM59:
+ 427 0000 80E0      		ldi r24,lo8(Disk_MS_Interface)
+ 428 0002 90E0      		ldi r25,hi8(Disk_MS_Interface)
+ 429 0004 0E94 0000 		call MS_Device_ProcessControlRequest
+ 430               	.LSM60:
+ 431 0008 80E0      		ldi r24,lo8(Generic_HID_Interface)
+ 432 000a 90E0      		ldi r25,hi8(Generic_HID_Interface)
+ 433 000c 0E94 0000 		call HID_Device_ProcessControlRequest
+ 434               	/* epilogue start */
+ 435               	.LSM61:
+ 436 0010 0895      		ret
+ 437               	.LFE144:
+ 439               		.section	.text.EVENT_USB_Device_Suspend,"ax",@progbits
+ 440               	.global	EVENT_USB_Device_Suspend
+ 442               	EVENT_USB_Device_Suspend:
+ 443               	.LFB143:
+ 444               	.LSM62:
+ 445               	/* prologue: function */
+ 446               	/* frame size = 0 */
+ 447               	.LSM63:
+ 448 0000 0E94 0000 		call USB_ResetInterface
+ 449               	/* epilogue start */
+ 450               	.LSM64:
+ 451 0004 0895      		ret
+ 452               	.LFE143:
+ 454               		.section	.text.EVENT_USB_Device_ConfigurationChanged,"ax",@progbits
+ 455               	.global	EVENT_USB_Device_ConfigurationChanged
+ 457               	EVENT_USB_Device_ConfigurationChanged:
+ 458               	.LFB142:
+ 459               	.LSM65:
+ 460 0000 0F93      		push r16
+ 461 0002 1F93      		push r17
+ 462               	/* prologue: function */
+ 463               	/* frame size = 0 */
+ 464               	.LSM66:
+ 465 0004 80E0      		ldi r24,lo8(Disk_MS_Interface)
+ 466 0006 90E0      		ldi r25,hi8(Disk_MS_Interface)
+ 467 0008 0E94 0000 		call MS_Device_ConfigureEndpoints
+ 468 000c 082F      		mov r16,r24
+ 469               	.LSM67:
+ 470 000e 80E0      		ldi r24,lo8(Generic_HID_Interface)
+ 471 0010 90E0      		ldi r25,hi8(Generic_HID_Interface)
+ 472 0012 0E94 0000 		call HID_Device_ConfigureEndpoints
+ 473               	.LSM68:
+ 474 0016 10E0      		ldi r17,lo8(0)
+ 475 0018 90E0      		ldi r25,lo8(0)
+ 476 001a 0823      		and r16,r24
+ 477 001c 1923      		and r17,r25
+ 478 001e 00FF      		sbrs r16,0
+ 479 0020 00C0      		rjmp .L29
+ 480 0022 90E6      		ldi r25,lo8(96)
+ 481 0024 00C0      		rjmp .L30
+ 482               	.L29:
+ 483 0026 90E9      		ldi r25,lo8(-112)
+ 484               	.L30:
+ 485               	.LBB85:
+ 486               	.LBB86:
+ 487               	.LSM69:
+ 488 0028 8BB1      		in r24,43-32
+ 489 002a 8F70      		andi r24,lo8(15)
+ 490 002c 982B      		or r25,r24
+ 491 002e 9BB9      		out 43-32,r25
+ 492               	/* epilogue start */
+ 493               	.LBE86:
+ 494               	.LBE85:
+ 495               	.LSM70:
+ 496 0030 1F91      		pop r17
+ 497 0032 0F91      		pop r16
+ 498 0034 0895      		ret
+ 499               	.LFE142:
+ 501               		.data
+ 502               	.LC1:
+ 503 000e 5365 6E73 		.string	"Sensor 1"
+ 503      6F72 2031 
+ 503      00
+ 504               	.LC2:
+ 505 0017 5365 6E73 		.string	"Sensor 2"
+ 505      6F72 2032 
+ 505      00
+ 506               	.LC3:
+ 507 0020 5365 6E73 		.string	"Sensor 3"
+ 507      6F72 2033 
+ 507      00
+ 508               		.section	.text.GetCorrectionValues,"ax",@progbits
+ 509               	.global	GetCorrectionValues
+ 511               	GetCorrectionValues:
+ 512               	.LFB139:
+ 513               	.LSM71:
+ 514               	/* prologue: function */
+ 515               	/* frame size = 0 */
+ 516               	.LSM72:
+ 517 0000 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 518 0002 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 519 0004 60E0      		ldi r22,lo8(Sensor1Name_EEPROM)
+ 520 0006 70E0      		ldi r23,hi8(Sensor1Name_EEPROM)
+ 521 0008 48E0      		ldi r20,lo8(8)
+ 522 000a 50E0      		ldi r21,hi8(8)
+ 523 000c 0E94 0000 		call __eerd_block_usb1287
+ 524               	.LSM73:
+ 525 0010 8091 0000 		lds r24,Sensor1Name_SRAM
+ 526 0014 8F3F      		cpi r24,lo8(-1)
+ 527 0016 01F4      		brne .L33
+ 528 0018 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 529 001a 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 530 001c 60E0      		ldi r22,lo8(.LC1)
+ 531 001e 70E0      		ldi r23,hi8(.LC1)
+ 532 0020 0E94 0000 		call strcpy
+ 533               	.L33:
+ 534               	.LSM74:
+ 535 0024 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 536 0026 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 537 0028 60E0      		ldi r22,lo8(Sensor2Name_EEPROM)
+ 538 002a 70E0      		ldi r23,hi8(Sensor2Name_EEPROM)
+ 539 002c 48E0      		ldi r20,lo8(8)
+ 540 002e 50E0      		ldi r21,hi8(8)
+ 541 0030 0E94 0000 		call __eerd_block_usb1287
+ 542               	.LSM75:
+ 543 0034 8091 0000 		lds r24,Sensor2Name_SRAM
+ 544 0038 8F3F      		cpi r24,lo8(-1)
+ 545 003a 01F4      		brne .L34
+ 546 003c 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 547 003e 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 548 0040 60E0      		ldi r22,lo8(.LC2)
+ 549 0042 70E0      		ldi r23,hi8(.LC2)
+ 550 0044 0E94 0000 		call strcpy
+ 551               	.L34:
+ 552               	.LSM76:
+ 553 0048 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 554 004a 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 555 004c 60E0      		ldi r22,lo8(Sensor3Name_EEPROM)
+ 556 004e 70E0      		ldi r23,hi8(Sensor3Name_EEPROM)
+ 557 0050 48E0      		ldi r20,lo8(8)
+ 558 0052 50E0      		ldi r21,hi8(8)
+ 559 0054 0E94 0000 		call __eerd_block_usb1287
+ 560               	.LSM77:
+ 561 0058 8091 0000 		lds r24,Sensor3Name_SRAM
+ 562 005c 8F3F      		cpi r24,lo8(-1)
+ 563 005e 01F4      		brne .L35
+ 564 0060 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 565 0062 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 566 0064 60E0      		ldi r22,lo8(.LC3)
+ 567 0066 70E0      		ldi r23,hi8(.LC3)
+ 568 0068 0E94 0000 		call strcpy
+ 569               	.L35:
+ 570               	.LSM78:
+ 571 006c 80E0      		ldi r24,lo8(Sensor1Correction_EEPROM)
+ 572 006e 90E0      		ldi r25,hi8(Sensor1Correction_EEPROM)
+ 573 0070 0E94 0000 		call __eerd_byte_usb1287
+ 574 0074 8093 0000 		sts Sensor1Correction_SRAM,r24
+ 575               	.LSM79:
+ 576 0078 80E0      		ldi r24,lo8(Sensor2Correction_EEPROM)
+ 577 007a 90E0      		ldi r25,hi8(Sensor2Correction_EEPROM)
+ 578 007c 0E94 0000 		call __eerd_byte_usb1287
+ 579 0080 8093 0000 		sts Sensor2Correction_SRAM,r24
+ 580               	.LSM80:
+ 581 0084 80E0      		ldi r24,lo8(Sensor3Correction_EEPROM)
+ 582 0086 90E0      		ldi r25,hi8(Sensor3Correction_EEPROM)
+ 583 0088 0E94 0000 		call __eerd_byte_usb1287
+ 584 008c 8093 0000 		sts Sensor3Correction_SRAM,r24
+ 585               	.LSM81:
+ 586 0090 80E0      		ldi r24,lo8(DaysLeft_EEPROM)
+ 587 0092 90E0      		ldi r25,hi8(DaysLeft_EEPROM)
+ 588 0094 0E94 0000 		call __eerd_word_usb1287
+ 589 0098 9093 0000 		sts (DaysLeft_SRAM)+1,r25
+ 590 009c 8093 0000 		sts DaysLeft_SRAM,r24
+ 591               	.LSM82:
+ 592 00a0 8F5F      		subi r24,lo8(-1)
+ 593 00a2 9F4F      		sbci r25,hi8(-1)
+ 594 00a4 01F4      		brne .L37
+ 595 00a6 82E3      		ldi r24,lo8(50)
+ 596 00a8 90E0      		ldi r25,hi8(50)
+ 597 00aa 9093 0000 		sts (DaysLeft_SRAM)+1,r25
+ 598 00ae 8093 0000 		sts DaysLeft_SRAM,r24
+ 599               	.L37:
+ 600 00b2 0895      		ret
+ 601               	.LFE139:
+ 603               		.data
+ 604               	.LC4:
+ 605 0029 4461 7461 		.string	"Datalogger V1.1"
+ 605      6C6F 6767 
+ 605      6572 2056 
+ 605      312E 3100 
+ 606               	.LC5:
+ 607 0039 4B61 6920 		.string	"Kai Riedel, 2013"
+ 607      5269 6564 
+ 607      656C 2C20 
+ 607      3230 3133 
+ 607      00
+ 608               	.LC6:
+ 609 004a 4461 7973 		.string	"Days: %d"
+ 609      3A20 2564 
+ 609      00
+ 610               	.LC7:
+ 611 0053 496E 7465 		.string	"Interval: %ds"
+ 611      7276 616C 
+ 611      3A20 2564 
+ 611      7300 
+ 612               	.LC8:
+ 613 0061 2343 00   		.string	"#C"
+ 614               	.LC9:
+ 615 0064 2520 00   		.string	"% "
+ 616               	.LC10:
+ 617 0067 2D2D 2D23 		.string	"---#C  "
+ 617      4320 2000 
+ 618               		.section	.text.SetupHardware,"ax",@progbits
+ 619               	.global	SetupHardware
+ 621               	SetupHardware:
+ 622               	.LFB138:
+ 623               	.LSM83:
+ 624 0000 AF92      		push r10
+ 625 0002 BF92      		push r11
+ 626 0004 CF92      		push r12
+ 627 0006 DF92      		push r13
+ 628 0008 EF92      		push r14
+ 629 000a FF92      		push r15
+ 630 000c 0F93      		push r16
+ 631 000e 1F93      		push r17
+ 632 0010 DF93      		push r29
+ 633 0012 CF93      		push r28
+ 634 0014 CDB7      		in r28,__SP_L__
+ 635 0016 DEB7      		in r29,__SP_H__
+ 636 0018 6297      		sbiw r28,18
+ 637 001a 0FB6      		in __tmp_reg__,__SREG__
+ 638 001c F894      		cli
+ 639 001e DEBF      		out __SP_H__,r29
+ 640 0020 0FBE      		out __SREG__,__tmp_reg__
+ 641 0022 CDBF      		out __SP_L__,r28
+ 642               	/* prologue: function */
+ 643               	/* frame size = 18 */
+ 644               	.LSM84:
+ 645 0024 84B7      		in r24,84-32
+ 646 0026 877F      		andi r24,lo8(-9)
+ 647 0028 84BF      		out 84-32,r24
+ 648               	.LSM85:
+ 649 002a 88E1      		ldi r24,lo8(24)
+ 650               	/* #APP */
+ 651               	 ;  688 "TempDataLogger.c" 1
+ 652 002c 0FB6      		in __tmp_reg__, __SREG__
+ 653 002e F894      		cli
+ 654 0030 8093 6000 		sts 96, r24
+ 655 0034 1092 6000 		sts 96, __zero_reg__
+ 656 0038 0FBE      		out __SREG__,__tmp_reg__
+ 657               		
+ 658               	 ;  0 "" 2
+ 659               	/* #NOAPP */
+ 660               	.LBB87:
+ 661               	.LSM86:
+ 662 003a 80E0      		ldi r24,lo8(0)
+ 663 003c 90E0      		ldi r25,hi8(0)
+ 664 003e 20E8      		ldi r18,lo8(-128)
+ 665               	/* #APP */
+ 666               	 ;  691 "TempDataLogger.c" 1
+ 667 0040 0FB6      		in __tmp_reg__,__SREG__
+ 668 0042 F894      		cli
+ 669 0044 2093 6100 		sts 97, r18
+ 670 0048 8093 6100 		sts 97, r24
+ 671 004c 0FBE      		out __SREG__, __tmp_reg__
+ 672               	 ;  0 "" 2
+ 673               	/* #NOAPP */
+ 674               	.LBE87:
+ 675               	.LBB88:
+ 676               	.LBB89:
+ 677               	.LSM87:
+ 678 004e 8AB1      		in r24,42-32
+ 679 0050 806F      		ori r24,lo8(-16)
+ 680 0052 8AB9      		out 42-32,r24
+ 681               	.LSM88:
+ 682 0054 8BB1      		in r24,43-32
+ 683 0056 8F70      		andi r24,lo8(15)
+ 684 0058 8BB9      		out 43-32,r24
+ 685               	.LBE89:
+ 686               	.LBE88:
+ 687               	.LBB90:
+ 688               	.LBB91:
+ 689               	.LSM89:
+ 690 005a 84B1      		in r24,36-32
+ 691 005c 8660      		ori r24,lo8(6)
+ 692 005e 84B9      		out 36-32,r24
+ 693               	.LSM90:
+ 694 0060 84B1      		in r24,36-32
+ 695 0062 867F      		andi r24,lo8(-10)
+ 696 0064 84B9      		out 36-32,r24
+ 697               	.LSM91:
+ 698 0066 85B1      		in r24,37-32
+ 699 0068 8960      		ori r24,lo8(9)
+ 700 006a 85B9      		out 37-32,r24
+ 701               	.LSM92:
+ 702 006c 8CE5      		ldi r24,lo8(92)
+ 703 006e 8CBD      		out 76-32,r24
+ 704               	.LSM93:
+ 705 0070 8DB5      		in r24,77-32
+ 706 0072 8160      		ori r24,lo8(1)
+ 707 0074 8DBD      		out 77-32,r24
+ 708               	.LBE91:
+ 709               	.LBE90:
+ 710               	.LBB92:
+ 711               	.LBB93:
+ 712               	.LSM94:
+ 713 0076 8DB1      		in r24,45-32
+ 714 0078 8360      		ori r24,lo8(3)
+ 715 007a 8DB9      		out 45-32,r24
+ 716               	.LSM95:
+ 717 007c 8EB1      		in r24,46-32
+ 718 007e 8360      		ori r24,lo8(3)
+ 719 0080 8EB9      		out 46-32,r24
+ 720               	.LBE93:
+ 721               	.LBE92:
+ 722               	.LBB94:
+ 723               	.LBB95:
+ 724               	.LSM96:
+ 725 0082 8091 BC00 		lds r24,188
+ 726 0086 8460      		ori r24,lo8(4)
+ 727 0088 8093 BC00 		sts 188,r24
+ 728               	.LBE95:
+ 729               	.LBE94:
+ 730               	.LSM97:
+ 731 008c 0E94 0000 		call lcd_init
+ 732               	.LSM98:
+ 733 0090 0E94 0000 		call GetCorrectionValues
+ 734               	.LSM99:
+ 735 0094 2598      		cbi 36-32,5
+ 736               	.LSM100:
+ 737 0096 2D9A      		sbi 37-32,5
+ 738               	.LSM101:
+ 739 0098 2C98      		cbi 37-32,4
+ 740               	.LSM102:
+ 741 009a 249A      		sbi 36-32,4
+ 742               	.LSM103:
+ 743 009c 6F9A      		sbi 45-32,7
+ 744               	.LSM104:
+ 745 009e 7798      		cbi 46-32,7
+ 746               	.LSM105:
+ 747 00a0 3F98      		cbi 39-32,7
+ 748               	.LSM106:
+ 749 00a2 379B      		sbis 38-32,7
+ 750 00a4 00C0      		rjmp .L39
+ 751 00a6 0E94 0000 		call USB_Init
+ 752               	.L39:
+ 753               	.LSM107:
+ 754 00aa 80E0      		ldi r24,lo8(LoggingInterval500MS_EEPROM)
+ 755 00ac 90E0      		ldi r25,hi8(LoggingInterval500MS_EEPROM)
+ 756 00ae 0E94 0000 		call __eerd_word_usb1287
+ 757 00b2 9093 0000 		sts (LoggingInterval500MS_SRAM)+1,r25
+ 758 00b6 8093 0000 		sts LoggingInterval500MS_SRAM,r24
+ 759               	.LSM108:
+ 760 00ba 8F3F      		cpi r24,255
+ 761 00bc 9105      		cpc r25,__zero_reg__
+ 762 00be 01F4      		brne .L40
+ 763 00c0 84E1      		ldi r24,lo8(20)
+ 764 00c2 90E0      		ldi r25,hi8(20)
+ 765 00c4 9093 0000 		sts (LoggingInterval500MS_SRAM)+1,r25
+ 766 00c8 8093 0000 		sts LoggingInterval500MS_SRAM,r24
+ 767               	.L40:
+ 768               	.LSM109:
+ 769 00cc 0E94 0000 		call DataflashManager_ResetDataflashProtections
+ 770               	.LSM110:
+ 771 00d0 3799      		sbic 38-32,7
+ 772 00d2 00C0      		rjmp .L43
+ 773               	.LBB96:
+ 774               	.LSM111:
+ 775 00d4 1982      		std Y+1,__zero_reg__
+ 776               	.LVL22:
+ 777               	.LSM112:
+ 778 00d6 1A82      		std Y+2,__zero_reg__
+ 779               	.LVL23:
+ 780               	.LSM113:
+ 781 00d8 80E0      		ldi r24,lo8(.LC4)
+ 782 00da 90E0      		ldi r25,hi8(.LC4)
+ 783 00dc 0E94 0000 		call lcd_print_str
+ 784               	.LSM114:
+ 785 00e0 82E0      		ldi r24,lo8(2)
+ 786 00e2 90E0      		ldi r25,hi8(2)
+ 787 00e4 61E0      		ldi r22,lo8(1)
+ 788 00e6 70E0      		ldi r23,hi8(1)
+ 789 00e8 0E94 0000 		call lcd_pos
+ 790               	.LSM115:
+ 791 00ec 80E0      		ldi r24,lo8(.LC5)
+ 792 00ee 90E0      		ldi r25,hi8(.LC5)
+ 793 00f0 0E94 0000 		call lcd_print_str
+ 794               	.LSM116:
+ 795 00f4 83E0      		ldi r24,lo8(3)
+ 796 00f6 90E0      		ldi r25,hi8(3)
+ 797 00f8 61E0      		ldi r22,lo8(1)
+ 798 00fa 70E0      		ldi r23,hi8(1)
+ 799 00fc 0E94 0000 		call lcd_pos
+ 800               	.LSM117:
+ 801 0100 00D0      		rcall .
+ 802 0102 00D0      		rcall .
+ 803 0104 00D0      		rcall .
+ 804 0106 EDB7      		in r30,__SP_L__
+ 805 0108 FEB7      		in r31,__SP_H__
+ 806 010a 3196      		adiw r30,1
+ 807 010c 8E01      		movw r16,r28
+ 808 010e 0D5F      		subi r16,lo8(-(3))
+ 809 0110 1F4F      		sbci r17,hi8(-(3))
+ 810 0112 ADB7      		in r26,__SP_L__
+ 811 0114 BEB7      		in r27,__SP_H__
+ 812 0116 1296      		adiw r26,1+1
+ 813 0118 1C93      		st X,r17
+ 814 011a 0E93      		st -X,r16
+ 815 011c 1197      		sbiw r26,1
+ 816 011e 80E0      		ldi r24,lo8(.LC6)
+ 817 0120 90E0      		ldi r25,hi8(.LC6)
+ 818 0122 9383      		std Z+3,r25
+ 819 0124 8283      		std Z+2,r24
+ 820 0126 8091 0000 		lds r24,DaysLeft_SRAM
+ 821 012a 9091 0000 		lds r25,(DaysLeft_SRAM)+1
+ 822 012e 9583      		std Z+5,r25
+ 823 0130 8483      		std Z+4,r24
+ 824 0132 0E94 0000 		call sprintf
+ 825               	.LSM118:
+ 826 0136 8DB7      		in r24,__SP_L__
+ 827 0138 9EB7      		in r25,__SP_H__
+ 828 013a 0696      		adiw r24,6
+ 829 013c 0FB6      		in __tmp_reg__,__SREG__
+ 830 013e F894      		cli
+ 831 0140 9EBF      		out __SP_H__,r25
+ 832 0142 0FBE      		out __SREG__,__tmp_reg__
+ 833 0144 8DBF      		out __SP_L__,r24
+ 834 0146 C801      		movw r24,r16
+ 835 0148 0E94 0000 		call lcd_print_str
+ 836               	.LSM119:
+ 837 014c 84E0      		ldi r24,lo8(4)
+ 838 014e 90E0      		ldi r25,hi8(4)
+ 839 0150 61E0      		ldi r22,lo8(1)
+ 840 0152 70E0      		ldi r23,hi8(1)
+ 841 0154 0E94 0000 		call lcd_pos
+ 842               	.LSM120:
+ 843 0158 00D0      		rcall .
+ 844 015a 00D0      		rcall .
+ 845 015c 00D0      		rcall .
+ 846 015e EDB7      		in r30,__SP_L__
+ 847 0160 FEB7      		in r31,__SP_H__
+ 848 0162 3196      		adiw r30,1
+ 849 0164 ADB7      		in r26,__SP_L__
+ 850 0166 BEB7      		in r27,__SP_H__
+ 851 0168 1296      		adiw r26,1+1
+ 852 016a 1C93      		st X,r17
+ 853 016c 0E93      		st -X,r16
+ 854 016e 1197      		sbiw r26,1
+ 855 0170 80E0      		ldi r24,lo8(.LC7)
+ 856 0172 90E0      		ldi r25,hi8(.LC7)
+ 857 0174 9383      		std Z+3,r25
+ 858 0176 8283      		std Z+2,r24
+ 859 0178 8091 0000 		lds r24,LoggingInterval500MS_SRAM
+ 860 017c 9091 0000 		lds r25,(LoggingInterval500MS_SRAM)+1
+ 861 0180 9695      		lsr r25
+ 862 0182 8795      		ror r24
+ 863 0184 9583      		std Z+5,r25
+ 864 0186 8483      		std Z+4,r24
+ 865 0188 0E94 0000 		call sprintf
+ 866               	.LSM121:
+ 867 018c 8DB7      		in r24,__SP_L__
+ 868 018e 9EB7      		in r25,__SP_H__
+ 869 0190 0696      		adiw r24,6
+ 870 0192 0FB6      		in __tmp_reg__,__SREG__
+ 871 0194 F894      		cli
+ 872 0196 9EBF      		out __SP_H__,r25
+ 873 0198 0FBE      		out __SREG__,__tmp_reg__
+ 874 019a 8DBF      		out __SP_L__,r24
+ 875 019c C801      		movw r24,r16
+ 876 019e 0E94 0000 		call lcd_print_str
+ 877 01a2 88E9      		ldi r24,lo8(15000)
+ 878 01a4 9AE3      		ldi r25,hi8(15000)
+ 879               	.LVL24:
+ 880               	.LBB97:
+ 881               	.LBB98:
+ 882               	.LBB99:
+ 883               	.LBB100:
+ 884               	.LSM122:
+ 885 01a6 28EC      		ldi r18,lo8(200)
+ 886 01a8 30E0      		ldi r19,hi8(200)
+ 887               	.L42:
+ 888 01aa F901      		movw r30,r18
+ 889               	.LVL25:
+ 890               	/* #APP */
+ 891               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 892 01ac 3197      		1: sbiw r30,1
+ 893 01ae 01F4      		brne 1b
+ 894               	 ;  0 "" 2
+ 895               	/* #NOAPP */
+ 896               	.LBE100:
+ 897               	.LBE99:
+ 898               	.LSM123:
+ 899 01b0 0197      		sbiw r24,1
+ 900               	.LSM124:
+ 901 01b2 01F4      		brne .L42
+ 902               	.LBE98:
+ 903               	.LBE97:
+ 904               	.LSM125:
+ 905 01b4 0E94 0000 		call lcd_clear
+ 906               	.LVL26:
+ 907               	.LSM126:
+ 908 01b8 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 909 01ba 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 910 01bc 0E94 0000 		call lcd_print_str
+ 911               	.LSM127:
+ 912 01c0 CE01      		movw r24,r28
+ 913 01c2 0296      		adiw r24,2
+ 914 01c4 BE01      		movw r22,r28
+ 915 01c6 6F5F      		subi r22,lo8(-(1))
+ 916 01c8 7F4F      		sbci r23,hi8(-(1))
+ 917 01ca 0E94 0000 		call HYT321_GetData
+ 918               	.LSM128:
+ 919 01ce 6091 0000 		lds r22,Sensor1Correction_SRAM
+ 920 01d2 7727      		clr r23
+ 921 01d4 67FD      		sbrc r22,7
+ 922 01d6 7095      		com r23
+ 923 01d8 2981      		ldd r18,Y+1
+ 924 01da 3327      		clr r19
+ 925 01dc 27FD      		sbrc r18,7
+ 926 01de 3095      		com r19
+ 927               	.LVL27:
+ 928 01e0 620F      		add r22,r18
+ 929 01e2 731F      		adc r23,r19
+ 930 01e4 8827      		clr r24
+ 931 01e6 77FD      		sbrc r23,7
+ 932 01e8 8095      		com r24
+ 933 01ea 982F      		mov r25,r24
+ 934 01ec 40E0      		ldi r20,lo8(.LC8)
+ 935 01ee 50E0      		ldi r21,hi8(.LC8)
+ 936 01f0 2BE2      		ldi r18,lo8(43)
+ 937               	.LVL28:
+ 938 01f2 01E0      		ldi r16,lo8(1)
+ 939 01f4 10E0      		ldi r17,hi8(1)
+ 940 01f6 FAE0      		ldi r31,lo8(10)
+ 941 01f8 EF2E      		mov r14,r31
+ 942 01fa F12C      		mov r15,__zero_reg__
+ 943 01fc E2E0      		ldi r30,lo8(2)
+ 944 01fe CE2E      		mov r12,r30
+ 945 0200 D12C      		mov r13,__zero_reg__
+ 946 0202 AA24      		clr r10
+ 947 0204 BB24      		clr r11
+ 948 0206 0E94 0000 		call lcd_print_value
+ 949               	.LSM129:
+ 950 020a 6A81      		ldd r22,Y+2
+ 951 020c 70E0      		ldi r23,lo8(0)
+ 952               	.LVL29:
+ 953 020e 80E0      		ldi r24,lo8(0)
+ 954 0210 90E0      		ldi r25,hi8(0)
+ 955               	.LVL30:
+ 956 0212 40E0      		ldi r20,lo8(.LC9)
+ 957 0214 50E0      		ldi r21,hi8(.LC9)
+ 958 0216 2FE2      		ldi r18,lo8(47)
+ 959 0218 3FE0      		ldi r19,lo8(15)
+ 960 021a E32E      		mov r14,r19
+ 961 021c F12C      		mov r15,__zero_reg__
+ 962 021e 0E94 0000 		call lcd_print_value
+ 963               	.LVL31:
+ 964               	.LSM130:
+ 965 0222 82E0      		ldi r24,lo8(2)
+ 966 0224 90E0      		ldi r25,hi8(2)
+ 967 0226 61E0      		ldi r22,lo8(1)
+ 968 0228 70E0      		ldi r23,hi8(1)
+ 969 022a 0E94 0000 		call lcd_pos
+ 970               	.LSM131:
+ 971 022e 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 972 0230 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 973 0232 0E94 0000 		call lcd_print_str
+ 974               	.LSM132:
+ 975 0236 82E0      		ldi r24,lo8(2)
+ 976 0238 90E0      		ldi r25,hi8(2)
+ 977 023a 6AE0      		ldi r22,lo8(10)
+ 978 023c 70E0      		ldi r23,hi8(10)
+ 979 023e 0E94 0000 		call lcd_pos
+ 980               	.LSM133:
+ 981 0242 80E0      		ldi r24,lo8(.LC10)
+ 982 0244 90E0      		ldi r25,hi8(.LC10)
+ 983 0246 0E94 0000 		call lcd_print_str
+ 984               	.LSM134:
+ 985 024a 83E0      		ldi r24,lo8(3)
+ 986 024c 90E0      		ldi r25,hi8(3)
+ 987 024e 61E0      		ldi r22,lo8(1)
+ 988 0250 70E0      		ldi r23,hi8(1)
+ 989 0252 0E94 0000 		call lcd_pos
+ 990               	.LSM135:
+ 991 0256 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 992 0258 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 993 025a 0E94 0000 		call lcd_print_str
+ 994               	.LSM136:
+ 995 025e 83E0      		ldi r24,lo8(3)
+ 996 0260 90E0      		ldi r25,hi8(3)
+ 997 0262 6AE0      		ldi r22,lo8(10)
+ 998 0264 70E0      		ldi r23,hi8(10)
+ 999 0266 0E94 0000 		call lcd_pos
+ 1000               	.LSM137:
+ 1001 026a 80E0      		ldi r24,lo8(.LC10)
+ 1002 026c 90E0      		ldi r25,hi8(.LC10)
+ 1003 026e 0E94 0000 		call lcd_print_str
+ 1004               	.LSM138:
+ 1005 0272 0E94 0000 		call RFM12_Init
+ 1006               	.LSM139:
+ 1007 0276 0E94 0000 		call Enable_receiver
+ 1008               	.LSM140:
+ 1009 027a 81E4      		ldi r24,lo8(3905)
+ 1010 027c 9FE0      		ldi r25,hi8(3905)
+ 1011 027e 9093 8900 		sts (136)+1,r25
+ 1012 0282 8093 8800 		sts 136,r24
+ 1013               	.LSM141:
+ 1014 0286 8DE0      		ldi r24,lo8(13)
+ 1015 0288 8093 8100 		sts 129,r24
+ 1016               	.LSM142:
+ 1017 028c 82E0      		ldi r24,lo8(2)
+ 1018 028e 8093 6F00 		sts 111,r24
+ 1019               	.L43:
+ 1020               	/* epilogue start */
+ 1021               	.LBE96:
+ 1022               	.LSM143:
+ 1023 0292 6296      		adiw r28,18
+ 1024 0294 0FB6      		in __tmp_reg__,__SREG__
+ 1025 0296 F894      		cli
+ 1026 0298 DEBF      		out __SP_H__,r29
+ 1027 029a 0FBE      		out __SREG__,__tmp_reg__
+ 1028 029c CDBF      		out __SP_L__,r28
+ 1029 029e CF91      		pop r28
+ 1030 02a0 DF91      		pop r29
+ 1031 02a2 1F91      		pop r17
+ 1032 02a4 0F91      		pop r16
+ 1033 02a6 FF90      		pop r15
+ 1034 02a8 EF90      		pop r14
+ 1035 02aa DF90      		pop r13
+ 1036 02ac CF90      		pop r12
+ 1037 02ae BF90      		pop r11
+ 1038 02b0 AF90      		pop r10
+ 1039 02b2 0895      		ret
+ 1040               	.LFE138:
+ 1042               		.section	.text.CloseLogFile,"ax",@progbits
+ 1043               	.global	CloseLogFile
+ 1045               	CloseLogFile:
+ 1046               	.LFB137:
+ 1047               	.LSM144:
+ 1048 0000 0F93      		push r16
+ 1049 0002 1F93      		push r17
+ 1050               	/* prologue: function */
+ 1051               	/* frame size = 0 */
+ 1052               	.LSM145:
+ 1053 0004 00E0      		ldi r16,lo8(TempLogFile)
+ 1054 0006 10E0      		ldi r17,hi8(TempLogFile)
+ 1055 0008 C801      		movw r24,r16
+ 1056 000a 0E94 0000 		call f_sync
+ 1057               	.LSM146:
+ 1058 000e C801      		movw r24,r16
+ 1059 0010 0E94 0000 		call f_close
+ 1060               	/* epilogue start */
+ 1061               	.LSM147:
+ 1062 0014 1F91      		pop r17
+ 1063 0016 0F91      		pop r16
+ 1064 0018 0895      		ret
+ 1065               	.LFE137:
+ 1067               		.data
+ 1068               	.LC11:
+ 1069 006f 436F 6E6E 		.string	"Connected to PC"
+ 1069      6563 7465 
+ 1069      6420 746F 
+ 1069      2050 4300 
+ 1070               		.section	.text.EVENT_USB_Device_Connect,"ax",@progbits
+ 1071               	.global	EVENT_USB_Device_Connect
+ 1073               	EVENT_USB_Device_Connect:
+ 1074               	.LFB140:
+ 1075               	.LSM148:
+ 1076               	/* prologue: function */
+ 1077               	/* frame size = 0 */
+ 1078               	.LBB101:
+ 1079               	.LBB102:
+ 1080               	.LSM149:
+ 1081 0000 8BB1      		in r24,43-32
+ 1082 0002 8F70      		andi r24,lo8(15)
+ 1083 0004 806A      		ori r24,lo8(-96)
+ 1084 0006 8BB9      		out 43-32,r24
+ 1085               	.LBE102:
+ 1086               	.LBE101:
+ 1087               	.LSM150:
+ 1088 0008 0E94 0000 		call CloseLogFile
+ 1089               	.LSM151:
+ 1090 000c 0E94 0000 		call lcd_clear
+ 1091               	.LSM152:
+ 1092 0010 80E0      		ldi r24,lo8(.LC11)
+ 1093 0012 90E0      		ldi r25,hi8(.LC11)
+ 1094 0014 0E94 0000 		call lcd_print_str
+ 1095               	/* epilogue start */
+ 1096               	.LSM153:
+ 1097 0018 0895      		ret
+ 1098               	.LFE140:
+ 1100               		.data
+ 1101               	.LC12:
+ 1102 007f 2530 3264 		.string	"%02d%02d%02d.txt"
+ 1102      2530 3264 
+ 1102      2530 3264 
+ 1102      2E74 7874 
+ 1102      00
+ 1103               	.LC13:
+ 1104 0090 4D65 6D6F 		.string	"Memory full...      "
+ 1104      7279 2066 
+ 1104      756C 6C2E 
+ 1104      2E2E 2020 
+ 1104      2020 2020 
+ 1105               		.section	.text.OpenLogFile,"ax",@progbits
+ 1106               	.global	OpenLogFile
+ 1108               	OpenLogFile:
+ 1109               	.LFB136:
+ 1110               	.LSM154:
+ 1111 0000 0F93      		push r16
+ 1112 0002 1F93      		push r17
+ 1113 0004 DF93      		push r29
+ 1114 0006 CF93      		push r28
+ 1115 0008 CDB7      		in r28,__SP_L__
+ 1116 000a DEB7      		in r29,__SP_H__
+ 1117 000c 2F97      		sbiw r28,15
+ 1118 000e 0FB6      		in __tmp_reg__,__SREG__
+ 1119 0010 F894      		cli
+ 1120 0012 DEBF      		out __SP_H__,r29
+ 1121 0014 0FBE      		out __SREG__,__tmp_reg__
+ 1122 0016 CDBF      		out __SP_L__,r28
+ 1123               	/* prologue: function */
+ 1124               	/* frame size = 15 */
+ 1125               	.LSM155:
+ 1126 0018 CE01      		movw r24,r28
+ 1127 001a 0196      		adiw r24,1
+ 1128 001c BE01      		movw r22,r28
+ 1129 001e 6E5F      		subi r22,lo8(-(2))
+ 1130 0020 7F4F      		sbci r23,hi8(-(2))
+ 1131 0022 AE01      		movw r20,r28
+ 1132 0024 4D5F      		subi r20,lo8(-(3))
+ 1133 0026 5F4F      		sbci r21,hi8(-(3))
+ 1134 0028 0E94 0000 		call DS1307_GetDate
+ 1135               	.LSM156:
+ 1136 002c 2981      		ldd r18,Y+1
+ 1137               	.LVL32:
+ 1138 002e 2093 0000 		sts oldday,r18
+ 1139               	.LSM157:
+ 1140 0032 8DB7      		in r24,__SP_L__
+ 1141 0034 9EB7      		in r25,__SP_H__
+ 1142 0036 0A97      		sbiw r24,10
+ 1143 0038 0FB6      		in __tmp_reg__,__SREG__
+ 1144 003a F894      		cli
+ 1145 003c 9EBF      		out __SP_H__,r25
+ 1146 003e 0FBE      		out __SREG__,__tmp_reg__
+ 1147 0040 8DBF      		out __SP_L__,r24
+ 1148 0042 EDB7      		in r30,__SP_L__
+ 1149 0044 FEB7      		in r31,__SP_H__
+ 1150 0046 3196      		adiw r30,1
+ 1151 0048 8E01      		movw r16,r28
+ 1152 004a 0C5F      		subi r16,lo8(-(4))
+ 1153 004c 1F4F      		sbci r17,hi8(-(4))
+ 1154 004e ADB7      		in r26,__SP_L__
+ 1155 0050 BEB7      		in r27,__SP_H__
+ 1156 0052 1296      		adiw r26,1+1
+ 1157 0054 1C93      		st X,r17
+ 1158 0056 0E93      		st -X,r16
+ 1159 0058 1197      		sbiw r26,1
+ 1160 005a 80E0      		ldi r24,lo8(.LC12)
+ 1161 005c 90E0      		ldi r25,hi8(.LC12)
+ 1162 005e 9383      		std Z+3,r25
+ 1163 0060 8283      		std Z+2,r24
+ 1164 0062 2483      		std Z+4,r18
+ 1165 0064 1582      		std Z+5,__zero_reg__
+ 1166 0066 8A81      		ldd r24,Y+2
+ 1167               	.LVL33:
+ 1168 0068 8683      		std Z+6,r24
+ 1169 006a 1782      		std Z+7,__zero_reg__
+ 1170 006c 8B81      		ldd r24,Y+3
+ 1171               	.LVL34:
+ 1172 006e 8087      		std Z+8,r24
+ 1173 0070 1186      		std Z+9,__zero_reg__
+ 1174 0072 0E94 0000 		call sprintf
+ 1175               	.LSM158:
+ 1176 0076 8DB7      		in r24,__SP_L__
+ 1177 0078 9EB7      		in r25,__SP_H__
+ 1178 007a 0A96      		adiw r24,10
+ 1179 007c 0FB6      		in __tmp_reg__,__SREG__
+ 1180 007e F894      		cli
+ 1181 0080 9EBF      		out __SP_H__,r25
+ 1182 0082 0FBE      		out __SREG__,__tmp_reg__
+ 1183 0084 8DBF      		out __SP_L__,r24
+ 1184 0086 80E0      		ldi r24,lo8(0)
+ 1185 0088 60E0      		ldi r22,lo8(DiskFATState)
+ 1186 008a 70E0      		ldi r23,hi8(DiskFATState)
+ 1187 008c 0E94 0000 		call f_mount
+ 1188               	.LSM159:
+ 1189 0090 80E0      		ldi r24,lo8(TempLogFile)
+ 1190 0092 90E0      		ldi r25,hi8(TempLogFile)
+ 1191 0094 B801      		movw r22,r16
+ 1192 0096 42E1      		ldi r20,lo8(18)
+ 1193 0098 0E94 0000 		call f_open
+ 1194               	.LSM160:
+ 1195 009c 4091 0000 		lds r20,TempLogFile+10
+ 1196 00a0 5091 0000 		lds r21,(TempLogFile+10)+1
+ 1197 00a4 6091 0000 		lds r22,(TempLogFile+10)+2
+ 1198 00a8 7091 0000 		lds r23,(TempLogFile+10)+3
+ 1199 00ac 80E0      		ldi r24,lo8(TempLogFile)
+ 1200 00ae 90E0      		ldi r25,hi8(TempLogFile)
+ 1201 00b0 0E94 0000 		call f_lseek
+ 1202               	.LSM161:
+ 1203 00b4 3799      		sbic 38-32,7
+ 1204 00b6 00C0      		rjmp .L50
+ 1205               	.LSM162:
+ 1206 00b8 8091 0000 		lds r24,DaysLeft_SRAM
+ 1207 00bc 9091 0000 		lds r25,(DaysLeft_SRAM)+1
+ 1208 00c0 892B      		or r24,r25
+ 1209 00c2 01F0      		breq .L51
+ 1210               	.LSM163:
+ 1211 00c4 81E0      		ldi r24,lo8(1)
+ 1212 00c6 8093 0000 		sts LogfileCreateSuccess,r24
+ 1213 00ca 00C0      		rjmp .L54
+ 1214               	.L51:
+ 1215               	.LSM164:
+ 1216 00cc 1092 0000 		sts LogfileCreateSuccess,__zero_reg__
+ 1217               	.LSM165:
+ 1218 00d0 0E94 0000 		call CloseLogFile
+ 1219               	.LSM166:
+ 1220 00d4 84E0      		ldi r24,lo8(4)
+ 1221 00d6 90E0      		ldi r25,hi8(4)
+ 1222 00d8 61E0      		ldi r22,lo8(1)
+ 1223 00da 70E0      		ldi r23,hi8(1)
+ 1224 00dc 0E94 0000 		call lcd_pos
+ 1225               	.LSM167:
+ 1226 00e0 80E0      		ldi r24,lo8(.LC13)
+ 1227 00e2 90E0      		ldi r25,hi8(.LC13)
+ 1228 00e4 0E94 0000 		call lcd_print_str
+ 1229 00e8 80E2      		ldi r24,lo8(20000)
+ 1230 00ea 9EE4      		ldi r25,hi8(20000)
+ 1231               	.LVL35:
+ 1232               	.LBB103:
+ 1233               	.LBB104:
+ 1234               	.LBB105:
+ 1235               	.LBB106:
+ 1236               	.LSM168:
+ 1237 00ec 28EC      		ldi r18,lo8(200)
+ 1238 00ee 30E0      		ldi r19,hi8(200)
+ 1239               	.L53:
+ 1240 00f0 F901      		movw r30,r18
+ 1241               	.LVL36:
+ 1242               	/* #APP */
+ 1243               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 1244 00f2 3197      		1: sbiw r30,1
+ 1245 00f4 01F4      		brne 1b
+ 1246               	 ;  0 "" 2
+ 1247               	/* #NOAPP */
+ 1248               	.LBE106:
+ 1249               	.LBE105:
+ 1250               	.LSM169:
+ 1251 00f6 0197      		sbiw r24,1
+ 1252               	.LSM170:
+ 1253 00f8 01F4      		brne .L53
+ 1254 00fa 00C0      		rjmp .L54
+ 1255               	.LVL37:
+ 1256               	.L50:
+ 1257               	.LBE104:
+ 1258               	.LBE103:
+ 1259               	.LSM171:
+ 1260 00fc 80E0      		ldi r24,lo8(0)
+ 1261 00fe 90E0      		ldi r25,hi8(0)
+ 1262 0100 60E0      		ldi r22,lo8(FreeMemory)
+ 1263 0102 70E0      		ldi r23,hi8(FreeMemory)
+ 1264 0104 40E0      		ldi r20,lo8(DiskFATState)
+ 1265 0106 50E0      		ldi r21,hi8(DiskFATState)
+ 1266 0108 0E94 0000 		call f_getfree
+ 1267               	.LVL38:
+ 1268               	.L54:
+ 1269               	/* epilogue start */
+ 1270               	.LSM172:
+ 1271 010c 2F96      		adiw r28,15
+ 1272 010e 0FB6      		in __tmp_reg__,__SREG__
+ 1273 0110 F894      		cli
+ 1274 0112 DEBF      		out __SP_H__,r29
+ 1275 0114 0FBE      		out __SREG__,__tmp_reg__
+ 1276 0116 CDBF      		out __SP_L__,r28
+ 1277 0118 CF91      		pop r28
+ 1278 011a DF91      		pop r29
+ 1279 011c 1F91      		pop r17
+ 1280 011e 0F91      		pop r16
+ 1281 0120 0895      		ret
+ 1282               	.LFE136:
+ 1284               		.section	.text.EVENT_USB_Device_Disconnect,"ax",@progbits
+ 1285               	.global	EVENT_USB_Device_Disconnect
+ 1287               	EVENT_USB_Device_Disconnect:
+ 1288               	.LFB141:
+ 1289               	.LSM173:
+ 1290               	/* prologue: function */
+ 1291               	/* frame size = 0 */
+ 1292               	.LBB107:
+ 1293               	.LBB108:
+ 1294               	.LSM174:
+ 1295 0000 8BB1      		in r24,43-32
+ 1296 0002 8F70      		andi r24,lo8(15)
+ 1297 0004 8061      		ori r24,lo8(16)
+ 1298 0006 8BB9      		out 43-32,r24
+ 1299               	.LBE108:
+ 1300               	.LBE107:
+ 1301               	.LSM175:
+ 1302 0008 0E94 0000 		call OpenLogFile
+ 1303               	/* epilogue start */
+ 1304               	.LSM176:
+ 1305 000c 0895      		ret
+ 1306               	.LFE141:
+ 1308               		.data
+ 1309               	.LC14:
+ 1310 00a5 4241 5454 		.string	"BATTERY    "
+ 1310      4552 5920 
+ 1310      2020 2000 
+ 1311               	.LC15:
+ 1312 00b1 2343 2020 		.string	"#C     "
+ 1312      2020 2000 
+ 1313               		.section	.text.RadioReceive,"ax",@progbits
+ 1314               	.global	RadioReceive
+ 1316               	RadioReceive:
+ 1317               	.LFB135:
+ 1318               	.LSM177:
+ 1319 0000 AF92      		push r10
+ 1320 0002 BF92      		push r11
+ 1321 0004 CF92      		push r12
+ 1322 0006 DF92      		push r13
+ 1323 0008 EF92      		push r14
+ 1324 000a FF92      		push r15
+ 1325 000c 0F93      		push r16
+ 1326 000e 1F93      		push r17
+ 1327               	/* prologue: function */
+ 1328               	/* frame size = 0 */
+ 1329               	.LSM178:
+ 1330               	/* #APP */
+ 1331               	 ;  534 "TempDataLogger.c" 1
+ 1332 0010 F894      		cli
+ 1333               	 ;  0 "" 2
+ 1334               	.LSM179:
+ 1335               	/* #NOAPP */
+ 1336 0012 80E0      		ldi r24,lo8(-20480)
+ 1337 0014 90EB      		ldi r25,hi8(-20480)
+ 1338 0016 0E94 0000 		call Spi16
+ 1339 001a 482F      		mov r20,r24
+ 1340 001c 8093 0000 		sts DataReceived,r24
+ 1341               	.LSM180:
+ 1342 0020 5091 0000 		lds r21,rec_started
+ 1343 0024 20E0      		ldi r18,lo8(0)
+ 1344 0026 30E0      		ldi r19,hi8(0)
+ 1345 0028 8330      		cpi r24,lo8(3)
+ 1346 002a 01F4      		brne .L60
+ 1347 002c 21E0      		ldi r18,lo8(1)
+ 1348 002e 30E0      		ldi r19,hi8(1)
+ 1349               	.L60:
+ 1350 0030 852F      		mov r24,r21
+ 1351 0032 90E0      		ldi r25,lo8(0)
+ 1352 0034 2823      		and r18,r24
+ 1353 0036 3923      		and r19,r25
+ 1354 0038 232B      		or r18,r19
+ 1355 003a 01F4      		brne .+2
+ 1356 003c 00C0      		rjmp .L59
+ 1357               	.LSM181:
+ 1358 003e 8091 0000 		lds r24,bufferposition
+ 1359 0042 8150      		subi r24,lo8(-(-1))
+ 1360 0044 8093 0000 		sts bufferposition,r24
+ 1361               	.LSM182:
+ 1362 0048 E82F      		mov r30,r24
+ 1363 004a F0E0      		ldi r31,lo8(0)
+ 1364 004c E050      		subi r30,lo8(-(recbuf))
+ 1365 004e F040      		sbci r31,hi8(-(recbuf))
+ 1366 0050 9081      		ld r25,Z
+ 1367 0052 8091 0000 		lds r24,Checksum
+ 1368 0056 891B      		sub r24,r25
+ 1369 0058 8093 0000 		sts Checksum,r24
+ 1370               	.LSM183:
+ 1371 005c 8917      		cp r24,r25
+ 1372 005e 01F0      		breq .+2
+ 1373 0060 00C0      		rjmp .L83
+ 1374               	.LSM184:
+ 1375 0062 1082      		st Z,__zero_reg__
+ 1376               	.LSM185:
+ 1377 0064 8091 0000 		lds r24,recbuf
+ 1378 0068 8134      		cpi r24,lo8(65)
+ 1379 006a 01F0      		breq .+2
+ 1380 006c 00C0      		rjmp .L62
+ 1381               	.LSM186:
+ 1382 006e 80E0      		ldi r24,lo8(recbuf+1)
+ 1383 0070 90E0      		ldi r25,hi8(recbuf+1)
+ 1384 0072 0E94 0000 		call atoi
+ 1385 0076 982F      		mov r25,r24
+ 1386               	.LSM187:
+ 1387 0078 8823      		tst r24
+ 1388 007a 01F0      		breq .L63
+ 1389               	.LSM188:
+ 1390 007c 9253      		subi r25,lo8(-(-50))
+ 1391               	.LSM189:
+ 1392 007e 8091 0000 		lds r24,Sensor2Correction_SRAM
+ 1393 0082 890F      		add r24,r25
+ 1394 0084 00C0      		rjmp .L81
+ 1395               	.L63:
+ 1396               	.LSM190:
+ 1397 0086 8091 0000 		lds r24,Sensor2PreviousValue
+ 1398               	.L81:
+ 1399 008a 8093 0000 		sts Sensor2Value,r24
+ 1400               	.LSM191:
+ 1401 008e 8091 0000 		lds r24,recbuf+1
+ 1402 0092 8835      		cpi r24,lo8(88)
+ 1403 0094 01F4      		brne .L65
+ 1404               	.LSM192:
+ 1405 0096 82E0      		ldi r24,lo8(2)
+ 1406 0098 90E0      		ldi r25,hi8(2)
+ 1407 009a 6AE0      		ldi r22,lo8(10)
+ 1408 009c 70E0      		ldi r23,hi8(10)
+ 1409 009e 0E94 0000 		call lcd_pos
+ 1410               	.LSM193:
+ 1411 00a2 80E0      		ldi r24,lo8(.LC14)
+ 1412 00a4 90E0      		ldi r25,hi8(.LC14)
+ 1413 00a6 0E94 0000 		call lcd_print_str
+ 1414 00aa 00C0      		rjmp .L66
+ 1415               	.L65:
+ 1416               	.LSM194:
+ 1417 00ac 6091 0000 		lds r22,Sensor2Value
+ 1418 00b0 7727      		clr r23
+ 1419 00b2 67FD      		sbrc r22,7
+ 1420 00b4 7095      		com r23
+ 1421 00b6 872F      		mov r24,r23
+ 1422 00b8 972F      		mov r25,r23
+ 1423 00ba 40E0      		ldi r20,lo8(.LC15)
+ 1424 00bc 50E0      		ldi r21,hi8(.LC15)
+ 1425 00be 2BE2      		ldi r18,lo8(43)
+ 1426 00c0 02E0      		ldi r16,lo8(2)
+ 1427 00c2 10E0      		ldi r17,hi8(2)
+ 1428 00c4 FAE0      		ldi r31,lo8(10)
+ 1429 00c6 EF2E      		mov r14,r31
+ 1430 00c8 F12C      		mov r15,__zero_reg__
+ 1431 00ca E2E0      		ldi r30,lo8(2)
+ 1432 00cc CE2E      		mov r12,r30
+ 1433 00ce D12C      		mov r13,__zero_reg__
+ 1434 00d0 AA24      		clr r10
+ 1435 00d2 BB24      		clr r11
+ 1436 00d4 0E94 0000 		call lcd_print_value
+ 1437               	.L66:
+ 1438               	.LSM195:
+ 1439 00d8 8091 0000 		lds r24,Sensor2Received
+ 1440 00dc 9091 0000 		lds r25,Sensor2Value
+ 1441 00e0 8823      		tst r24
+ 1442 00e2 01F0      		breq .L67
+ 1443               	.LSM196:
+ 1444 00e4 8091 0000 		lds r24,Sensor2MinValue
+ 1445 00e8 9817      		cp r25,r24
+ 1446 00ea 04F4      		brge .L68
+ 1447 00ec 9093 0000 		sts Sensor2MinValue,r25
+ 1448               	.L68:
+ 1449               	.LSM197:
+ 1450 00f0 8091 0000 		lds r24,Sensor2MaxValue
+ 1451 00f4 8917      		cp r24,r25
+ 1452 00f6 04F4      		brge .L69
+ 1453 00f8 9093 0000 		sts Sensor2MaxValue,r25
+ 1454 00fc 00C0      		rjmp .L69
+ 1455               	.L67:
+ 1456               	.LSM198:
+ 1457 00fe 9093 0000 		sts Sensor2MinValue,r25
+ 1458               	.LSM199:
+ 1459 0102 9093 0000 		sts Sensor2MaxValue,r25
+ 1460               	.LSM200:
+ 1461 0106 81E0      		ldi r24,lo8(1)
+ 1462 0108 8093 0000 		sts Sensor2Received,r24
+ 1463               	.L69:
+ 1464               	.LSM201:
+ 1465 010c 1092 0000 		sts (Sensor2Timeout)+1,__zero_reg__
+ 1466 0110 1092 0000 		sts Sensor2Timeout,__zero_reg__
+ 1467               	.L62:
+ 1468               	.LSM202:
+ 1469 0114 8091 0000 		lds r24,recbuf
+ 1470 0118 8234      		cpi r24,lo8(66)
+ 1471 011a 01F0      		breq .+2
+ 1472 011c 00C0      		rjmp .L83
+ 1473               	.LSM203:
+ 1474 011e 80E0      		ldi r24,lo8(recbuf+1)
+ 1475 0120 90E0      		ldi r25,hi8(recbuf+1)
+ 1476 0122 0E94 0000 		call atoi
+ 1477 0126 982F      		mov r25,r24
+ 1478               	.LSM204:
+ 1479 0128 8823      		tst r24
+ 1480 012a 01F0      		breq .L70
+ 1481               	.LSM205:
+ 1482 012c 9253      		subi r25,lo8(-(-50))
+ 1483               	.LSM206:
+ 1484 012e 8091 0000 		lds r24,Sensor3Correction_SRAM
+ 1485 0132 890F      		add r24,r25
+ 1486 0134 00C0      		rjmp .L82
+ 1487               	.L70:
+ 1488               	.LSM207:
+ 1489 0136 8091 0000 		lds r24,Sensor3PreviousValue
+ 1490               	.L82:
+ 1491 013a 8093 0000 		sts Sensor3Value,r24
+ 1492               	.LSM208:
+ 1493 013e 8091 0000 		lds r24,recbuf+1
+ 1494 0142 8835      		cpi r24,lo8(88)
+ 1495 0144 01F4      		brne .L72
+ 1496               	.LSM209:
+ 1497 0146 83E0      		ldi r24,lo8(3)
+ 1498 0148 90E0      		ldi r25,hi8(3)
+ 1499 014a 6AE0      		ldi r22,lo8(10)
+ 1500 014c 70E0      		ldi r23,hi8(10)
+ 1501 014e 0E94 0000 		call lcd_pos
+ 1502               	.LSM210:
+ 1503 0152 80E0      		ldi r24,lo8(.LC14)
+ 1504 0154 90E0      		ldi r25,hi8(.LC14)
+ 1505 0156 0E94 0000 		call lcd_print_str
+ 1506 015a 00C0      		rjmp .L73
+ 1507               	.L72:
+ 1508               	.LSM211:
+ 1509 015c 6091 0000 		lds r22,Sensor3Value
+ 1510 0160 7727      		clr r23
+ 1511 0162 67FD      		sbrc r22,7
+ 1512 0164 7095      		com r23
+ 1513 0166 872F      		mov r24,r23
+ 1514 0168 972F      		mov r25,r23
+ 1515 016a 40E0      		ldi r20,lo8(.LC15)
+ 1516 016c 50E0      		ldi r21,hi8(.LC15)
+ 1517 016e 2BE2      		ldi r18,lo8(43)
+ 1518 0170 03E0      		ldi r16,lo8(3)
+ 1519 0172 10E0      		ldi r17,hi8(3)
+ 1520 0174 3AE0      		ldi r19,lo8(10)
+ 1521 0176 E32E      		mov r14,r19
+ 1522 0178 F12C      		mov r15,__zero_reg__
+ 1523 017a B2E0      		ldi r27,lo8(2)
+ 1524 017c CB2E      		mov r12,r27
+ 1525 017e D12C      		mov r13,__zero_reg__
+ 1526 0180 AA24      		clr r10
+ 1527 0182 BB24      		clr r11
+ 1528 0184 0E94 0000 		call lcd_print_value
+ 1529               	.L73:
+ 1530               	.LSM212:
+ 1531 0188 8091 0000 		lds r24,Sensor3Received
+ 1532 018c 9091 0000 		lds r25,Sensor3Value
+ 1533 0190 8823      		tst r24
+ 1534 0192 01F0      		breq .L74
+ 1535               	.LSM213:
+ 1536 0194 8091 0000 		lds r24,Sensor3MinValue
+ 1537 0198 9817      		cp r25,r24
+ 1538 019a 04F4      		brge .L75
+ 1539 019c 9093 0000 		sts Sensor3MinValue,r25
+ 1540               	.L75:
+ 1541               	.LSM214:
+ 1542 01a0 8091 0000 		lds r24,Sensor3MaxValue
+ 1543 01a4 8917      		cp r24,r25
+ 1544 01a6 04F4      		brge .L76
+ 1545 01a8 9093 0000 		sts Sensor3MaxValue,r25
+ 1546 01ac 00C0      		rjmp .L76
+ 1547               	.L74:
+ 1548               	.LSM215:
+ 1549 01ae 9093 0000 		sts Sensor3MinValue,r25
+ 1550               	.LSM216:
+ 1551 01b2 9093 0000 		sts Sensor3MaxValue,r25
+ 1552               	.LSM217:
+ 1553 01b6 81E0      		ldi r24,lo8(1)
+ 1554 01b8 8093 0000 		sts Sensor3Received,r24
+ 1555               	.L76:
+ 1556               	.LSM218:
+ 1557 01bc 1092 0000 		sts (Sensor3Timeout)+1,__zero_reg__
+ 1558 01c0 1092 0000 		sts Sensor3Timeout,__zero_reg__
+ 1559 01c4 00C0      		rjmp .L83
+ 1560               	.L59:
+ 1561               	.LSM219:
+ 1562 01c6 4230      		cpi r20,lo8(2)
+ 1563 01c8 01F4      		brne .L78
+ 1564               	.LSM220:
+ 1565 01ca 81E0      		ldi r24,lo8(1)
+ 1566 01cc 8093 0000 		sts rec_started,r24
+ 1567               	.LSM221:
+ 1568 01d0 1092 0000 		sts Checksum,__zero_reg__
+ 1569 01d4 00C0      		rjmp .L77
+ 1570               	.L78:
+ 1571               	.LSM222:
+ 1572 01d6 5523      		tst r21
+ 1573 01d8 01F0      		breq .L79
+ 1574 01da 8091 0000 		lds r24,bufferposition
+ 1575 01de 8630      		cpi r24,lo8(6)
+ 1576 01e0 00F4      		brsh .L79
+ 1577               	.LSM223:
+ 1578 01e2 E82F      		mov r30,r24
+ 1579 01e4 F0E0      		ldi r31,lo8(0)
+ 1580 01e6 E050      		subi r30,lo8(-(recbuf))
+ 1581 01e8 F040      		sbci r31,hi8(-(recbuf))
+ 1582 01ea 4083      		st Z,r20
+ 1583 01ec 8F5F      		subi r24,lo8(-(1))
+ 1584 01ee 8093 0000 		sts bufferposition,r24
+ 1585               	.LSM224:
+ 1586 01f2 8091 0000 		lds r24,Checksum
+ 1587 01f6 840F      		add r24,r20
+ 1588 01f8 8093 0000 		sts Checksum,r24
+ 1589 01fc 00C0      		rjmp .L77
+ 1590               	.L79:
+ 1591               	.LSM225:
+ 1592 01fe 8091 0000 		lds r24,bufferposition
+ 1593 0202 8530      		cpi r24,lo8(5)
+ 1594 0204 00F0      		brlo .L77
+ 1595               	.L83:
+ 1596               	.LSM226:
+ 1597 0206 0E94 0000 		call RestartFifoFill_receiver
+ 1598               	.LSM227:
+ 1599 020a 1092 0000 		sts rec_started,__zero_reg__
+ 1600               	.LSM228:
+ 1601 020e 1092 0000 		sts bufferposition,__zero_reg__
+ 1602               	.L77:
+ 1603               	.LSM229:
+ 1604               	/* #APP */
+ 1605               	 ;  632 "TempDataLogger.c" 1
+ 1606 0212 7894      		sei
+ 1607               	 ;  0 "" 2
+ 1608               	/* epilogue start */
+ 1609               	.LSM230:
+ 1610               	/* #NOAPP */
+ 1611 0214 1F91      		pop r17
+ 1612 0216 0F91      		pop r16
+ 1613 0218 FF90      		pop r15
+ 1614 021a EF90      		pop r14
+ 1615 021c DF90      		pop r13
+ 1616 021e CF90      		pop r12
+ 1617 0220 BF90      		pop r11
+ 1618 0222 AF90      		pop r10
+ 1619 0224 0895      		ret
+ 1620               	.LFE135:
+ 1622               		.section	.text.main,"ax",@progbits
+ 1623               	.global	main
+ 1625               	main:
+ 1626               	.LFB134:
+ 1627               	.LSM231:
+ 1628               	/* prologue: function */
+ 1629               	/* frame size = 0 */
+ 1630               	.LSM232:
+ 1631 0000 0E94 0000 		call SetupHardware
+ 1632               	.LSM233:
+ 1633 0004 0E94 0000 		call OpenLogFile
+ 1634               	.LBB109:
+ 1635               	.LBB110:
+ 1636               	.LSM234:
+ 1637 0008 8BB1      		in r24,43-32
+ 1638 000a 8F70      		andi r24,lo8(15)
+ 1639 000c 8061      		ori r24,lo8(16)
+ 1640 000e 8BB9      		out 43-32,r24
+ 1641               	.LBE110:
+ 1642               	.LBE109:
+ 1643               	.LSM235:
+ 1644               	/* #APP */
+ 1645               	 ;  509 "TempDataLogger.c" 1
+ 1646 0010 7894      		sei
+ 1647               	 ;  0 "" 2
+ 1648               	/* #NOAPP */
+ 1649               	.L90:
+ 1650               	.LSM236:
+ 1651 0012 3799      		sbic 38-32,7
+ 1652 0014 00C0      		rjmp .L85
+ 1653               	.LSM237:
+ 1654 0016 1198      		cbi 34-32,1
+ 1655               	.LSM238:
+ 1656 0018 029B      		sbis 32-32,2
+ 1657 001a 00C0      		rjmp .L90
+ 1658 001c 0E94 0000 		call RadioReceive
+ 1659 0020 00C0      		rjmp .L90
+ 1660               	.L85:
+ 1661               	.LSM239:
+ 1662 0022 80E0      		ldi r24,lo8(Disk_MS_Interface)
+ 1663 0024 90E0      		ldi r25,hi8(Disk_MS_Interface)
+ 1664 0026 0E94 0000 		call MS_Device_USBTask
+ 1665               	.LSM240:
+ 1666 002a 80E0      		ldi r24,lo8(Generic_HID_Interface)
+ 1667 002c 90E0      		ldi r25,hi8(Generic_HID_Interface)
+ 1668 002e 0E94 0000 		call HID_Device_USBTask
+ 1669               	.LSM241:
+ 1670 0032 0E94 0000 		call USB_USBTask
+ 1671 0036 00C0      		rjmp .L90
+ 1672               	.LFE134:
+ 1674               		.data
+ 1675               	.LC16:
+ 1676 00b9 2530 3264 		.string	"%02d.%02d.%02d,%02d:%02d:%02d  "
+ 1676      2E25 3032 
+ 1676      642E 2530 
+ 1676      3264 2C25 
+ 1676      3032 643A 
+ 1677               	.LC17:
+ 1678 00d9 7E00      		.string	"~"
+ 1679               	.LC18:
+ 1680 00db 443A 2533 		.string	"D:%3d I:%3d L:%3d"
+ 1680      6420 493A 
+ 1680      2533 6420 
+ 1680      4C3A 2533 
+ 1680      6400 
+ 1681               	.LC19:
+ 1682 00ed 2343 2F00 		.string	"#C/"
+ 1683               	.LC20:
+ 1684 00f1 436C 6561 		.string	"Clear Min/Max Store"
+ 1684      7220 4D69 
+ 1684      6E2F 4D61 
+ 1684      7820 5374 
+ 1684      6F72 6500 
+ 1685               	.LC21:
+ 1686 0105 2343 2020 		.string	"#C      "
+ 1686      2020 2020 
+ 1686      00
+ 1687               	.LC22:
+ 1688 010e 504F 5354 		.string	"POST /update HTTP/1.1\n"
+ 1688      202F 7570 
+ 1688      6461 7465 
+ 1688      2048 5454 
+ 1688      502F 312E 
+ 1689               	.LC23:
+ 1690 0125 486F 7374 		.string	"Host: api.thingspeak.com\n"
+ 1690      3A20 6170 
+ 1690      692E 7468 
+ 1690      696E 6773 
+ 1690      7065 616B 
+ 1691               	.LC24:
+ 1692 013f 436F 6E6E 		.string	"Connection: close\n"
+ 1692      6563 7469 
+ 1692      6F6E 3A20 
+ 1692      636C 6F73 
+ 1692      650A 00
+ 1693               	.LC25:
+ 1694 0152 582D 5448 		.string	"X-THINGSPEAKAPIKEY: "
+ 1694      494E 4753 
+ 1694      5045 414B 
+ 1694      4150 494B 
+ 1694      4559 3A20 
+ 1695               	.LC26:
+ 1696 0167 4142 4344 		.string	"ABCDEFDG"
+ 1696      4546 4447 
+ 1696      00
+ 1697               	.LC27:
+ 1698 0170 0A00      		.string	"\n"
+ 1699               	.LC28:
+ 1700 0172 436F 6E74 		.string	"Content-Type: application/x-www-form-urlencoded\n"
+ 1700      656E 742D 
+ 1700      5479 7065 
+ 1700      3A20 6170 
+ 1700      706C 6963 
+ 1701               	.LC29:
+ 1702 01a3 436F 6E74 		.string	"Content-Length: 43"
+ 1702      656E 742D 
+ 1702      4C65 6E67 
+ 1702      7468 3A20 
+ 1702      3433 00
+ 1703               	.LC30:
+ 1704 01b6 0A0A 00   		.string	"\n\n"
+ 1705               	.LC31:
+ 1706 01b9 6669 656C 		.string	"field1="
+ 1706      6431 3D00 
+ 1707               	.LC32:
+ 1708 01c1 2533 6400 		.string	"%3d"
+ 1709               	.LC33:
+ 1710 01c5 2666 6965 		.string	"&field2="
+ 1710      6C64 323D 
+ 1710      00
+ 1711               	.LC34:
+ 1712 01ce 2666 6965 		.string	"&field3="
+ 1712      6C64 333D 
+ 1712      00
+ 1713               	.LC35:
+ 1714 01d7 2666 6965 		.string	"&field4="
+ 1714      6C64 343D 
+ 1714      00
+ 1715               	.LC36:
+ 1716 01e0 0D0A 00   		.string	"\r\n"
+ 1717               	.LC37:
+ 1718 01e3 2530 3264 		.string	"%02d:%02d:%02d,%d,%d,%d,%d\r\n"
+ 1718      3A25 3032 
+ 1718      643A 2530 
+ 1718      3264 2C25 
+ 1718      642C 2564 
+ 1719               		.section	.text.__vector_17,"ax",@progbits
+ 1720               	.global	__vector_17
+ 1722               	__vector_17:
+ 1723               	.LFB133:
+ 1724               	.LSM242:
+ 1725 0000 1F92      		push __zero_reg__
+ 1726 0002 0F92      		push r0
+ 1727 0004 0FB6      		in r0,__SREG__
+ 1728 0006 0F92      		push r0
+ 1729 0008 0BB6      		in r0,91-32
+ 1730 000a 0F92      		push r0
+ 1731 000c 1124      		clr __zero_reg__
+ 1732 000e 9F92      		push r9
+ 1733 0010 AF92      		push r10
+ 1734 0012 BF92      		push r11
+ 1735 0014 CF92      		push r12
+ 1736 0016 DF92      		push r13
+ 1737 0018 EF92      		push r14
+ 1738 001a FF92      		push r15
+ 1739 001c 0F93      		push r16
+ 1740 001e 1F93      		push r17
+ 1741 0020 2F93      		push r18
+ 1742 0022 3F93      		push r19
+ 1743 0024 4F93      		push r20
+ 1744 0026 5F93      		push r21
+ 1745 0028 6F93      		push r22
+ 1746 002a 7F93      		push r23
+ 1747 002c 8F93      		push r24
+ 1748 002e 9F93      		push r25
+ 1749 0030 AF93      		push r26
+ 1750 0032 BF93      		push r27
+ 1751 0034 EF93      		push r30
+ 1752 0036 FF93      		push r31
+ 1753 0038 DF93      		push r29
+ 1754 003a CF93      		push r28
+ 1755 003c CDB7      		in r28,__SP_L__
+ 1756 003e DEB7      		in r29,__SP_H__
+ 1757 0040 A897      		sbiw r28,40
+ 1758 0042 DEBF      		out __SP_H__,r29
+ 1759 0044 CDBF      		out __SP_L__,r28
+ 1760               	/* prologue: Signal */
+ 1761               	/* frame size = 40 */
+ 1762               	.LBB111:
+ 1763               	.LBB112:
+ 1764               	.LSM243:
+ 1765 0046 9BB0      		in r9,43-32
+ 1766               	.LBE112:
+ 1767               	.LBE111:
+ 1768               	.LSM244:
+ 1769 0048 1F82      		std Y+7,__zero_reg__
+ 1770               	.LVL39:
+ 1771               	.LSM245:
+ 1772 004a 1886      		std Y+8,__zero_reg__
+ 1773               	.LVL40:
+ 1774               	.LSM246:
+ 1775 004c 3799      		sbic 38-32,7
+ 1776 004e 00C0      		rjmp .L92
+ 1777               	.LSM247:
+ 1778 0050 CE01      		movw r24,r28
+ 1779 0052 0196      		adiw r24,1
+ 1780 0054 BE01      		movw r22,r28
+ 1781 0056 6E5F      		subi r22,lo8(-(2))
+ 1782 0058 7F4F      		sbci r23,hi8(-(2))
+ 1783 005a AE01      		movw r20,r28
+ 1784 005c 4D5F      		subi r20,lo8(-(3))
+ 1785 005e 5F4F      		sbci r21,hi8(-(3))
+ 1786 0060 0E94 0000 		call DS1307_GetDate
+ 1787               	.LSM248:
+ 1788 0064 CE01      		movw r24,r28
+ 1789 0066 0496      		adiw r24,4
+ 1790 0068 BE01      		movw r22,r28
+ 1791 006a 6B5F      		subi r22,lo8(-(5))
+ 1792 006c 7F4F      		sbci r23,hi8(-(5))
+ 1793 006e AE01      		movw r20,r28
+ 1794 0070 4A5F      		subi r20,lo8(-(6))
+ 1795 0072 5F4F      		sbci r21,hi8(-(6))
+ 1796 0074 0E94 0000 		call DS1307_GetTime
+ 1797               	.LSM249:
+ 1798 0078 8DB7      		in r24,__SP_L__
+ 1799 007a 9EB7      		in r25,__SP_H__
+ 1800 007c 4097      		sbiw r24,16
+ 1801 007e 0FB6      		in __tmp_reg__,__SREG__
+ 1802 0080 F894      		cli
+ 1803 0082 9EBF      		out __SP_H__,r25
+ 1804 0084 0FBE      		out __SREG__,__tmp_reg__
+ 1805 0086 8DBF      		out __SP_L__,r24
+ 1806 0088 EDB7      		in r30,__SP_L__
+ 1807 008a FEB7      		in r31,__SP_H__
+ 1808 008c 3196      		adiw r30,1
+ 1809 008e 8E01      		movw r16,r28
+ 1810 0090 055F      		subi r16,lo8(-(11))
+ 1811 0092 1F4F      		sbci r17,hi8(-(11))
+ 1812 0094 ADB7      		in r26,__SP_L__
+ 1813 0096 BEB7      		in r27,__SP_H__
+ 1814 0098 1296      		adiw r26,1+1
+ 1815 009a 1C93      		st X,r17
+ 1816 009c 0E93      		st -X,r16
+ 1817 009e 1197      		sbiw r26,1
+ 1818 00a0 80E0      		ldi r24,lo8(.LC16)
+ 1819 00a2 90E0      		ldi r25,hi8(.LC16)
+ 1820 00a4 9383      		std Z+3,r25
+ 1821 00a6 8283      		std Z+2,r24
+ 1822 00a8 8981      		ldd r24,Y+1
+ 1823               	.LVL41:
+ 1824 00aa 8483      		std Z+4,r24
+ 1825 00ac 1582      		std Z+5,__zero_reg__
+ 1826 00ae 8A81      		ldd r24,Y+2
+ 1827               	.LVL42:
+ 1828 00b0 8683      		std Z+6,r24
+ 1829 00b2 1782      		std Z+7,__zero_reg__
+ 1830 00b4 8B81      		ldd r24,Y+3
+ 1831               	.LVL43:
+ 1832 00b6 8087      		std Z+8,r24
+ 1833 00b8 1186      		std Z+9,__zero_reg__
+ 1834 00ba 8C81      		ldd r24,Y+4
+ 1835               	.LVL44:
+ 1836 00bc 8287      		std Z+10,r24
+ 1837 00be 1386      		std Z+11,__zero_reg__
+ 1838 00c0 8D81      		ldd r24,Y+5
+ 1839               	.LVL45:
+ 1840 00c2 8487      		std Z+12,r24
+ 1841 00c4 1586      		std Z+13,__zero_reg__
+ 1842 00c6 8E81      		ldd r24,Y+6
+ 1843               	.LVL46:
+ 1844 00c8 8687      		std Z+14,r24
+ 1845 00ca 1786      		std Z+15,__zero_reg__
+ 1846 00cc 0E94 0000 		call sprintf
+ 1847               	.LSM250:
+ 1848 00d0 8DB7      		in r24,__SP_L__
+ 1849 00d2 9EB7      		in r25,__SP_H__
+ 1850 00d4 4096      		adiw r24,16
+ 1851 00d6 0FB6      		in __tmp_reg__,__SREG__
+ 1852 00d8 F894      		cli
+ 1853 00da 9EBF      		out __SP_H__,r25
+ 1854 00dc 0FBE      		out __SREG__,__tmp_reg__
+ 1855 00de 8DBF      		out __SP_L__,r24
+ 1856 00e0 84E0      		ldi r24,lo8(4)
+ 1857 00e2 90E0      		ldi r25,hi8(4)
+ 1858 00e4 61E0      		ldi r22,lo8(1)
+ 1859 00e6 70E0      		ldi r23,hi8(1)
+ 1860 00e8 0E94 0000 		call lcd_pos
+ 1861               	.LSM251:
+ 1862 00ec C801      		movw r24,r16
+ 1863 00ee 0E94 0000 		call lcd_print_str
+ 1864               	.LSM252:
+ 1865 00f2 82E0      		ldi r24,lo8(2)
+ 1866 00f4 90E0      		ldi r25,hi8(2)
+ 1867 00f6 61E0      		ldi r22,lo8(1)
+ 1868 00f8 70E0      		ldi r23,hi8(1)
+ 1869 00fa 0E94 0000 		call lcd_pos
+ 1870               	.LSM253:
+ 1871 00fe 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 1872 0100 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 1873 0102 0E94 0000 		call lcd_print_str
+ 1874               	.LSM254:
+ 1875 0106 83E0      		ldi r24,lo8(3)
+ 1876 0108 90E0      		ldi r25,hi8(3)
+ 1877 010a 61E0      		ldi r22,lo8(1)
+ 1878 010c 70E0      		ldi r23,hi8(1)
+ 1879 010e 0E94 0000 		call lcd_pos
+ 1880               	.LSM255:
+ 1881 0112 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 1882 0114 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 1883 0116 0E94 0000 		call lcd_print_str
+ 1884               	.LSM256:
+ 1885 011a 81E0      		ldi r24,lo8(1)
+ 1886 011c 90E0      		ldi r25,hi8(1)
+ 1887 011e 61E0      		ldi r22,lo8(1)
+ 1888 0120 70E0      		ldi r23,hi8(1)
+ 1889 0122 0E94 0000 		call lcd_pos
+ 1890               	.LSM257:
+ 1891 0126 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 1892 0128 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 1893 012a 0E94 0000 		call lcd_print_str
+ 1894               	.LSM258:
+ 1895 012e CE01      		movw r24,r28
+ 1896 0130 0896      		adiw r24,8
+ 1897 0132 BE01      		movw r22,r28
+ 1898 0134 695F      		subi r22,lo8(-(7))
+ 1899 0136 7F4F      		sbci r23,hi8(-(7))
+ 1900 0138 0E94 0000 		call HYT321_GetData
+ 1901               	.LSM259:
+ 1902 013c 6091 0000 		lds r22,Sensor1Correction_SRAM
+ 1903               	.LVL47:
+ 1904 0140 2F81      		ldd r18,Y+7
+ 1905 0142 620F      		add r22,r18
+ 1906 0144 6F83      		std Y+7,r22
+ 1907               	.LSM260:
+ 1908 0146 7727      		clr r23
+ 1909 0148 67FD      		sbrc r22,7
+ 1910 014a 7095      		com r23
+ 1911 014c 872F      		mov r24,r23
+ 1912 014e 972F      		mov r25,r23
+ 1913               	.LVL48:
+ 1914 0150 40E0      		ldi r20,lo8(.LC8)
+ 1915 0152 50E0      		ldi r21,hi8(.LC8)
+ 1916 0154 2BE2      		ldi r18,lo8(43)
+ 1917 0156 01E0      		ldi r16,lo8(1)
+ 1918 0158 10E0      		ldi r17,hi8(1)
+ 1919 015a AAE0      		ldi r26,lo8(10)
+ 1920 015c EA2E      		mov r14,r26
+ 1921 015e F12C      		mov r15,__zero_reg__
+ 1922 0160 F2E0      		ldi r31,lo8(2)
+ 1923 0162 CF2E      		mov r12,r31
+ 1924 0164 D12C      		mov r13,__zero_reg__
+ 1925 0166 AA24      		clr r10
+ 1926 0168 BB24      		clr r11
+ 1927 016a 0E94 0000 		call lcd_print_value
+ 1928               	.LVL49:
+ 1929               	.LSM261:
+ 1930 016e 6885      		ldd r22,Y+8
+ 1931 0170 70E0      		ldi r23,lo8(0)
+ 1932               	.LVL50:
+ 1933 0172 80E0      		ldi r24,lo8(0)
+ 1934 0174 90E0      		ldi r25,hi8(0)
+ 1935               	.LVL51:
+ 1936 0176 40E0      		ldi r20,lo8(.LC9)
+ 1937 0178 50E0      		ldi r21,hi8(.LC9)
+ 1938 017a 2FE2      		ldi r18,lo8(47)
+ 1939 017c EFE0      		ldi r30,lo8(15)
+ 1940 017e EE2E      		mov r14,r30
+ 1941 0180 F12C      		mov r15,__zero_reg__
+ 1942 0182 0E94 0000 		call lcd_print_value
+ 1943               	.LVL52:
+ 1944               	.LSM262:
+ 1945 0186 81E0      		ldi r24,lo8(1)
+ 1946 0188 90E0      		ldi r25,hi8(1)
+ 1947 018a 64E1      		ldi r22,lo8(20)
+ 1948 018c 70E0      		ldi r23,hi8(20)
+ 1949 018e 0E94 0000 		call lcd_pos
+ 1950               	.LSM263:
+ 1951 0192 8F81      		ldd r24,Y+7
+ 1952               	.LVL53:
+ 1953 0194 482F      		mov r20,r24
+ 1954 0196 5527      		clr r21
+ 1955 0198 47FD      		sbrc r20,7
+ 1956 019a 5095      		com r21
+ 1957 019c 8091 0000 		lds r24,Sensor1PreviousValue
+ 1958 01a0 282F      		mov r18,r24
+ 1959 01a2 3327      		clr r19
+ 1960 01a4 27FD      		sbrc r18,7
+ 1961 01a6 3095      		com r19
+ 1962 01a8 C901      		movw r24,r18
+ 1963 01aa 0196      		adiw r24,1
+ 1964 01ac 8417      		cp r24,r20
+ 1965 01ae 9507      		cpc r25,r21
+ 1966 01b0 04F4      		brge .L93
+ 1967 01b2 80E0      		ldi r24,lo8(0)
+ 1968 01b4 00C0      		rjmp .L131
+ 1969               	.L93:
+ 1970               	.LSM264:
+ 1971 01b6 2150      		subi r18,lo8(-(-1))
+ 1972 01b8 3040      		sbci r19,hi8(-(-1))
+ 1973 01ba 4217      		cp r20,r18
+ 1974 01bc 5307      		cpc r21,r19
+ 1975 01be 04F4      		brge .L95
+ 1976 01c0 81E0      		ldi r24,lo8(1)
+ 1977               	.L131:
+ 1978 01c2 61E0      		ldi r22,lo8(1)
+ 1979 01c4 0E94 0000 		call lcd_write
+ 1980 01c8 00C0      		rjmp .L94
+ 1981               	.L95:
+ 1982               	.LSM265:
+ 1983 01ca 80E0      		ldi r24,lo8(.LC17)
+ 1984 01cc 90E0      		ldi r25,hi8(.LC17)
+ 1985 01ce 0E94 0000 		call lcd_print_str
+ 1986               	.L94:
+ 1987               	.LSM266:
+ 1988 01d2 8091 0000 		lds r24,Sensor1Received
+ 1989 01d6 9F81      		ldd r25,Y+7
+ 1990 01d8 8823      		tst r24
+ 1991 01da 01F0      		breq .L96
+ 1992               	.LSM267:
+ 1993 01dc 8091 0000 		lds r24,Sensor1MinValue
+ 1994 01e0 9817      		cp r25,r24
+ 1995 01e2 04F4      		brge .L97
+ 1996 01e4 9093 0000 		sts Sensor1MinValue,r25
+ 1997               	.L97:
+ 1998               	.LSM268:
+ 1999 01e8 8091 0000 		lds r24,Sensor1MaxValue
+ 2000 01ec 8917      		cp r24,r25
+ 2001 01ee 04F4      		brge .L98
+ 2002 01f0 9093 0000 		sts Sensor1MaxValue,r25
+ 2003 01f4 00C0      		rjmp .L98
+ 2004               	.L96:
+ 2005               	.LSM269:
+ 2006 01f6 9093 0000 		sts Sensor1MinValue,r25
+ 2007               	.LSM270:
+ 2008 01fa 9093 0000 		sts Sensor1MaxValue,r25
+ 2009               	.LSM271:
+ 2010 01fe 81E0      		ldi r24,lo8(1)
+ 2011 0200 8093 0000 		sts Sensor1Received,r24
+ 2012               	.L98:
+ 2013               	.LSM272:
+ 2014 0204 8F81      		ldd r24,Y+7
+ 2015 0206 8093 0000 		sts Sensor1PreviousValue,r24
+ 2016               	.LSM273:
+ 2017 020a 1D99      		sbic 35-32,5
+ 2018 020c 00C0      		rjmp .L92
+ 2019               	.LVL54:
+ 2020               	.LSM274:
+ 2021 020e 0E94 0000 		call lcd_init
+ 2022               	.LVL55:
+ 2023               	.LSM275:
+ 2024 0212 80E0      		ldi r24,lo8(Sensor1Name_SRAM)
+ 2025 0214 90E0      		ldi r25,hi8(Sensor1Name_SRAM)
+ 2026 0216 0E94 0000 		call lcd_print_str
+ 2027               	.LSM276:
+ 2028 021a 84E0      		ldi r24,lo8(4)
+ 2029 021c 90E0      		ldi r25,hi8(4)
+ 2030 021e 61E0      		ldi r22,lo8(1)
+ 2031 0220 70E0      		ldi r23,hi8(1)
+ 2032 0222 0E94 0000 		call lcd_pos
+ 2033               	.LSM277:
+ 2034 0226 2091 0000 		lds r18,LoggingInterval500MS_SRAM
+ 2035 022a 3091 0000 		lds r19,(LoggingInterval500MS_SRAM)+1
+ 2036 022e ADB7      		in r26,__SP_L__
+ 2037 0230 BEB7      		in r27,__SP_H__
+ 2038 0232 1A97      		sbiw r26,10
+ 2039 0234 0FB6      		in __tmp_reg__,__SREG__
+ 2040 0236 F894      		cli
+ 2041 0238 BEBF      		out __SP_H__,r27
+ 2042 023a 0FBE      		out __SREG__,__tmp_reg__
+ 2043 023c ADBF      		out __SP_L__,r26
+ 2044 023e EDB7      		in r30,__SP_L__
+ 2045 0240 FEB7      		in r31,__SP_H__
+ 2046 0242 3196      		adiw r30,1
+ 2047 0244 8E01      		movw r16,r28
+ 2048 0246 055F      		subi r16,lo8(-(11))
+ 2049 0248 1F4F      		sbci r17,hi8(-(11))
+ 2050 024a 1296      		adiw r26,1+1
+ 2051 024c 1C93      		st X,r17
+ 2052 024e 0E93      		st -X,r16
+ 2053 0250 1197      		sbiw r26,1
+ 2054 0252 80E0      		ldi r24,lo8(.LC18)
+ 2055 0254 90E0      		ldi r25,hi8(.LC18)
+ 2056 0256 9383      		std Z+3,r25
+ 2057 0258 8283      		std Z+2,r24
+ 2058 025a 8091 0000 		lds r24,DaysLeft_SRAM
+ 2059 025e 9091 0000 		lds r25,(DaysLeft_SRAM)+1
+ 2060 0262 9583      		std Z+5,r25
+ 2061 0264 8483      		std Z+4,r24
+ 2062 0266 C901      		movw r24,r18
+ 2063 0268 9695      		lsr r25
+ 2064 026a 8795      		ror r24
+ 2065 026c 9783      		std Z+7,r25
+ 2066 026e 8683      		std Z+6,r24
+ 2067 0270 8091 0000 		lds r24,CurrentLoggingTicks
+ 2068 0274 9091 0000 		lds r25,(CurrentLoggingTicks)+1
+ 2069 0278 281B      		sub r18,r24
+ 2070 027a 390B      		sbc r19,r25
+ 2071 027c 3695      		lsr r19
+ 2072 027e 2795      		ror r18
+ 2073 0280 3187      		std Z+9,r19
+ 2074 0282 2087      		std Z+8,r18
+ 2075 0284 0E94 0000 		call sprintf
+ 2076               	.LSM278:
+ 2077 0288 8DB7      		in r24,__SP_L__
+ 2078 028a 9EB7      		in r25,__SP_H__
+ 2079 028c 0A96      		adiw r24,10
+ 2080 028e 0FB6      		in __tmp_reg__,__SREG__
+ 2081 0290 F894      		cli
+ 2082 0292 9EBF      		out __SP_H__,r25
+ 2083 0294 0FBE      		out __SREG__,__tmp_reg__
+ 2084 0296 8DBF      		out __SP_L__,r24
+ 2085 0298 C801      		movw r24,r16
+ 2086 029a 0E94 0000 		call lcd_print_str
+ 2087               	.LSM279:
+ 2088 029e 8091 0000 		lds r24,Sensor1Received
+ 2089 02a2 8823      		tst r24
+ 2090 02a4 01F0      		breq .L99
+ 2091               	.LSM280:
+ 2092 02a6 6091 0000 		lds r22,Sensor1MinValue
+ 2093 02aa 7727      		clr r23
+ 2094 02ac 67FD      		sbrc r22,7
+ 2095 02ae 7095      		com r23
+ 2096 02b0 872F      		mov r24,r23
+ 2097 02b2 972F      		mov r25,r23
+ 2098 02b4 40E0      		ldi r20,lo8(.LC19)
+ 2099 02b6 50E0      		ldi r21,hi8(.LC19)
+ 2100 02b8 2BE2      		ldi r18,lo8(43)
+ 2101 02ba 01E0      		ldi r16,lo8(1)
+ 2102 02bc 10E0      		ldi r17,hi8(1)
+ 2103 02be BAE0      		ldi r27,lo8(10)
+ 2104 02c0 EB2E      		mov r14,r27
+ 2105 02c2 F12C      		mov r15,__zero_reg__
+ 2106 02c4 A2E0      		ldi r26,lo8(2)
+ 2107 02c6 CA2E      		mov r12,r26
+ 2108 02c8 D12C      		mov r13,__zero_reg__
+ 2109 02ca AA24      		clr r10
+ 2110 02cc BB24      		clr r11
+ 2111 02ce 0E94 0000 		call lcd_print_value
+ 2112               	.LSM281:
+ 2113 02d2 6091 0000 		lds r22,Sensor1MaxValue
+ 2114 02d6 7727      		clr r23
+ 2115 02d8 67FD      		sbrc r22,7
+ 2116 02da 7095      		com r23
+ 2117 02dc 872F      		mov r24,r23
+ 2118 02de 972F      		mov r25,r23
+ 2119 02e0 40E0      		ldi r20,lo8(.LC8)
+ 2120 02e2 50E0      		ldi r21,hi8(.LC8)
+ 2121 02e4 2BE2      		ldi r18,lo8(43)
+ 2122 02e6 F0E1      		ldi r31,lo8(16)
+ 2123 02e8 EF2E      		mov r14,r31
+ 2124 02ea F12C      		mov r15,__zero_reg__
+ 2125 02ec 0E94 0000 		call lcd_print_value
+ 2126               	.L99:
+ 2127               	.LSM282:
+ 2128 02f0 82E0      		ldi r24,lo8(2)
+ 2129 02f2 90E0      		ldi r25,hi8(2)
+ 2130 02f4 61E0      		ldi r22,lo8(1)
+ 2131 02f6 70E0      		ldi r23,hi8(1)
+ 2132 02f8 0E94 0000 		call lcd_pos
+ 2133               	.LSM283:
+ 2134 02fc 80E0      		ldi r24,lo8(Sensor2Name_SRAM)
+ 2135 02fe 90E0      		ldi r25,hi8(Sensor2Name_SRAM)
+ 2136 0300 0E94 0000 		call lcd_print_str
+ 2137               	.LSM284:
+ 2138 0304 83E0      		ldi r24,lo8(3)
+ 2139 0306 90E0      		ldi r25,hi8(3)
+ 2140 0308 61E0      		ldi r22,lo8(1)
+ 2141 030a 70E0      		ldi r23,hi8(1)
+ 2142 030c 0E94 0000 		call lcd_pos
+ 2143               	.LSM285:
+ 2144 0310 80E0      		ldi r24,lo8(Sensor3Name_SRAM)
+ 2145 0312 90E0      		ldi r25,hi8(Sensor3Name_SRAM)
+ 2146 0314 0E94 0000 		call lcd_print_str
+ 2147               	.LSM286:
+ 2148 0318 8091 0000 		lds r24,Sensor2Received
+ 2149 031c 8823      		tst r24
+ 2150 031e 01F0      		breq .L100
+ 2151               	.LSM287:
+ 2152 0320 6091 0000 		lds r22,Sensor2MinValue
+ 2153 0324 7727      		clr r23
+ 2154 0326 67FD      		sbrc r22,7
+ 2155 0328 7095      		com r23
+ 2156 032a 872F      		mov r24,r23
+ 2157 032c 972F      		mov r25,r23
+ 2158 032e 40E0      		ldi r20,lo8(.LC19)
+ 2159 0330 50E0      		ldi r21,hi8(.LC19)
+ 2160 0332 2BE2      		ldi r18,lo8(43)
+ 2161 0334 02E0      		ldi r16,lo8(2)
+ 2162 0336 10E0      		ldi r17,hi8(2)
+ 2163 0338 EAE0      		ldi r30,lo8(10)
+ 2164 033a EE2E      		mov r14,r30
+ 2165 033c F12C      		mov r15,__zero_reg__
+ 2166 033e 32E0      		ldi r19,lo8(2)
+ 2167 0340 C32E      		mov r12,r19
+ 2168 0342 D12C      		mov r13,__zero_reg__
+ 2169 0344 AA24      		clr r10
+ 2170 0346 BB24      		clr r11
+ 2171 0348 0E94 0000 		call lcd_print_value
+ 2172               	.LSM288:
+ 2173 034c 6091 0000 		lds r22,Sensor2MaxValue
+ 2174 0350 7727      		clr r23
+ 2175 0352 67FD      		sbrc r22,7
+ 2176 0354 7095      		com r23
+ 2177 0356 872F      		mov r24,r23
+ 2178 0358 972F      		mov r25,r23
+ 2179 035a 40E0      		ldi r20,lo8(.LC8)
+ 2180 035c 50E0      		ldi r21,hi8(.LC8)
+ 2181 035e 2BE2      		ldi r18,lo8(43)
+ 2182 0360 B0E1      		ldi r27,lo8(16)
+ 2183 0362 EB2E      		mov r14,r27
+ 2184 0364 F12C      		mov r15,__zero_reg__
+ 2185 0366 0E94 0000 		call lcd_print_value
+ 2186               	.L100:
+ 2187               	.LSM289:
+ 2188 036a 8091 0000 		lds r24,Sensor3Received
+ 2189 036e 8823      		tst r24
+ 2190 0370 01F0      		breq .L101
+ 2191               	.LSM290:
+ 2192 0372 6091 0000 		lds r22,Sensor3MinValue
+ 2193 0376 7727      		clr r23
+ 2194 0378 67FD      		sbrc r22,7
+ 2195 037a 7095      		com r23
+ 2196 037c 872F      		mov r24,r23
+ 2197 037e 972F      		mov r25,r23
+ 2198 0380 40E0      		ldi r20,lo8(.LC19)
+ 2199 0382 50E0      		ldi r21,hi8(.LC19)
+ 2200 0384 2BE2      		ldi r18,lo8(43)
+ 2201 0386 03E0      		ldi r16,lo8(3)
+ 2202 0388 10E0      		ldi r17,hi8(3)
+ 2203 038a AAE0      		ldi r26,lo8(10)
+ 2204 038c EA2E      		mov r14,r26
+ 2205 038e F12C      		mov r15,__zero_reg__
+ 2206 0390 F2E0      		ldi r31,lo8(2)
+ 2207 0392 CF2E      		mov r12,r31
+ 2208 0394 D12C      		mov r13,__zero_reg__
+ 2209 0396 AA24      		clr r10
+ 2210 0398 BB24      		clr r11
+ 2211 039a 0E94 0000 		call lcd_print_value
+ 2212               	.LSM291:
+ 2213 039e 6091 0000 		lds r22,Sensor3MaxValue
+ 2214 03a2 7727      		clr r23
+ 2215 03a4 67FD      		sbrc r22,7
+ 2216 03a6 7095      		com r23
+ 2217 03a8 872F      		mov r24,r23
+ 2218 03aa 972F      		mov r25,r23
+ 2219 03ac 40E0      		ldi r20,lo8(.LC8)
+ 2220 03ae 50E0      		ldi r21,hi8(.LC8)
+ 2221 03b0 2BE2      		ldi r18,lo8(43)
+ 2222 03b2 E0E1      		ldi r30,lo8(16)
+ 2223 03b4 EE2E      		mov r14,r30
+ 2224 03b6 F12C      		mov r15,__zero_reg__
+ 2225 03b8 0E94 0000 		call lcd_print_value
+ 2226               	.L101:
+ 2227 03bc 10E0      		ldi r17,lo8(0)
+ 2228               	.LVL56:
+ 2229               	.LBB113:
+ 2230               	.LBB114:
+ 2231               	.LBB115:
+ 2232               	.LBB116:
+ 2233               	.LSM292:
+ 2234 03be 48EC      		ldi r20,lo8(200)
+ 2235 03c0 E42E      		mov r14,r20
+ 2236 03c2 F12C      		mov r15,__zero_reg__
+ 2237 03c4 00C0      		rjmp .L102
+ 2238               	.LVL57:
+ 2239               	.L105:
+ 2240               	.LBE116:
+ 2241               	.LBE115:
+ 2242               	.LBE114:
+ 2243               	.LBE113:
+ 2244               	.LSM293:
+ 2245 03c6 88EE      		ldi r24,lo8(1000)
+ 2246 03c8 93E0      		ldi r25,hi8(1000)
+ 2247               	.L103:
+ 2248               	.LBB120:
+ 2249               	.LBB119:
+ 2250               	.LBB118:
+ 2251               	.LBB117:
+ 2252               	.LSM294:
+ 2253 03ca F701      		movw r30,r14
+ 2254               	/* #APP */
+ 2255               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 2256 03cc 3197      		1: sbiw r30,1
+ 2257 03ce 01F4      		brne 1b
+ 2258               	 ;  0 "" 2
+ 2259               	/* #NOAPP */
+ 2260               	.LBE117:
+ 2261               	.LBE118:
+ 2262               	.LSM295:
+ 2263 03d0 0197      		sbiw r24,1
+ 2264               	.LSM296:
+ 2265 03d2 01F4      		brne .L103
+ 2266               	.LBE119:
+ 2267               	.LBE120:
+ 2268               	.LSM297:
+ 2269 03d4 1F31      		cpi r17,lo8(31)
+ 2270 03d6 00F0      		brlo .L104
+ 2271               	.LSM298:
+ 2272 03d8 1092 0000 		sts Sensor1Received,__zero_reg__
+ 2273               	.LSM299:
+ 2274 03dc 1092 0000 		sts Sensor2Received,__zero_reg__
+ 2275               	.LSM300:
+ 2276 03e0 1092 0000 		sts Sensor3Received,__zero_reg__
+ 2277               	.LSM301:
+ 2278 03e4 84E0      		ldi r24,lo8(4)
+ 2279 03e6 90E0      		ldi r25,hi8(4)
+ 2280               	.LVL58:
+ 2281 03e8 61E0      		ldi r22,lo8(1)
+ 2282 03ea 70E0      		ldi r23,hi8(1)
+ 2283 03ec 0E94 0000 		call lcd_pos
+ 2284               	.LVL59:
+ 2285               	.LSM302:
+ 2286 03f0 80E0      		ldi r24,lo8(.LC20)
+ 2287 03f2 90E0      		ldi r25,hi8(.LC20)
+ 2288 03f4 0E94 0000 		call lcd_print_str
+ 2289               	.LVL60:
+ 2290               	.L104:
+ 2291               	.LSM303:
+ 2292 03f8 1F5F      		subi r17,lo8(-(1))
+ 2293               	.L102:
+ 2294               	.LSM304:
+ 2295 03fa 1D9B      		sbis 35-32,5
+ 2296 03fc 00C0      		rjmp .L105
+ 2297               	.LSM305:
+ 2298 03fe 6091 0000 		lds r22,Sensor1PreviousValue
+ 2299 0402 7727      		clr r23
+ 2300 0404 67FD      		sbrc r22,7
+ 2301 0406 7095      		com r23
+ 2302 0408 872F      		mov r24,r23
+ 2303 040a 972F      		mov r25,r23
+ 2304 040c 40E0      		ldi r20,lo8(.LC21)
+ 2305 040e 50E0      		ldi r21,hi8(.LC21)
+ 2306 0410 2BE2      		ldi r18,lo8(43)
+ 2307 0412 01E0      		ldi r16,lo8(1)
+ 2308 0414 10E0      		ldi r17,hi8(1)
+ 2309 0416 3AE0      		ldi r19,lo8(10)
+ 2310 0418 E32E      		mov r14,r19
+ 2311 041a F12C      		mov r15,__zero_reg__
+ 2312 041c B2E0      		ldi r27,lo8(2)
+ 2313 041e CB2E      		mov r12,r27
+ 2314 0420 D12C      		mov r13,__zero_reg__
+ 2315 0422 AA24      		clr r10
+ 2316 0424 BB24      		clr r11
+ 2317 0426 0E94 0000 		call lcd_print_value
+ 2318               	.LVL61:
+ 2319               	.LSM306:
+ 2320 042a 6091 0000 		lds r22,Sensor2Value
+ 2321 042e 7727      		clr r23
+ 2322 0430 67FD      		sbrc r22,7
+ 2323 0432 7095      		com r23
+ 2324 0434 872F      		mov r24,r23
+ 2325 0436 972F      		mov r25,r23
+ 2326 0438 40E0      		ldi r20,lo8(.LC21)
+ 2327 043a 50E0      		ldi r21,hi8(.LC21)
+ 2328 043c 2BE2      		ldi r18,lo8(43)
+ 2329 043e 02E0      		ldi r16,lo8(2)
+ 2330 0440 10E0      		ldi r17,hi8(2)
+ 2331 0442 0E94 0000 		call lcd_print_value
+ 2332               	.LSM307:
+ 2333 0446 6091 0000 		lds r22,Sensor3Value
+ 2334 044a 7727      		clr r23
+ 2335 044c 67FD      		sbrc r22,7
+ 2336 044e 7095      		com r23
+ 2337 0450 872F      		mov r24,r23
+ 2338 0452 972F      		mov r25,r23
+ 2339 0454 40E0      		ldi r20,lo8(.LC21)
+ 2340 0456 50E0      		ldi r21,hi8(.LC21)
+ 2341 0458 2BE2      		ldi r18,lo8(43)
+ 2342 045a 03E0      		ldi r16,lo8(3)
+ 2343 045c 10E0      		ldi r17,hi8(3)
+ 2344 045e 0E94 0000 		call lcd_print_value
+ 2345               	.LVL62:
+ 2346               	.L92:
+ 2347               	.LSM308:
+ 2348 0462 2091 0000 		lds r18,Sensor3Received
+ 2349 0466 30E0      		ldi r19,lo8(0)
+ 2350 0468 8091 0000 		lds r24,Sensor2Received
+ 2351 046c 90E0      		ldi r25,lo8(0)
+ 2352 046e 2823      		and r18,r24
+ 2353 0470 3923      		and r19,r25
+ 2354 0472 232B      		or r18,r19
+ 2355 0474 01F4      		brne .+2
+ 2356 0476 00C0      		rjmp .L106
+ 2357               	.LSM309:
+ 2358 0478 8091 0000 		lds r24,WebEnableCounter
+ 2359 047c 9091 0000 		lds r25,(WebEnableCounter)+1
+ 2360 0480 9C01      		movw r18,r24
+ 2361 0482 2F5F      		subi r18,lo8(-(1))
+ 2362 0484 3F4F      		sbci r19,hi8(-(1))
+ 2363 0486 3093 0000 		sts (WebEnableCounter)+1,r19
+ 2364 048a 2093 0000 		sts WebEnableCounter,r18
+ 2365 048e 8259      		subi r24,lo8(1170)
+ 2366 0490 9440      		sbci r25,hi8(1170)
+ 2367 0492 01F4      		brne .L107
+ 2368 0494 2C9A      		sbi 37-32,4
+ 2369               	.L107:
+ 2370               	.LSM310:
+ 2371 0496 2E31      		cpi r18,30
+ 2372 0498 3105      		cpc r19,__zero_reg__
+ 2373 049a 01F4      		brne .L108
+ 2374               	.LBB121:
+ 2375               	.LBB122:
+ 2376               	.LSM311:
+ 2377 049c 1092 C900 		sts 201,__zero_reg__
+ 2378               	.LSM312:
+ 2379 04a0 1092 C800 		sts 200,__zero_reg__
+ 2380               	.LSM313:
+ 2381 04a4 1092 CA00 		sts 202,__zero_reg__
+ 2382               	.LSM314:
+ 2383 04a8 1092 CD00 		sts (204)+1,__zero_reg__
+ 2384 04ac 1092 CC00 		sts 204,__zero_reg__
+ 2385               	.LSM315:
+ 2386 04b0 5398      		cbi 42-32,3
+ 2387               	.LSM316:
+ 2388 04b2 5A98      		cbi 43-32,2
+ 2389               	.LBE122:
+ 2390               	.LBE121:
+ 2391               	.LSM317:
+ 2392 04b4 2C98      		cbi 37-32,4
+ 2393 04b6 00C0      		rjmp .L106
+ 2394               	.L108:
+ 2395               	.LSM318:
+ 2396 04b8 215B      		subi r18,lo8(1201)
+ 2397 04ba 3440      		sbci r19,hi8(1201)
+ 2398 04bc 00F4      		brsh .+2
+ 2399 04be 00C0      		rjmp .L106
+ 2400               	.LBB123:
+ 2401               	.LBB124:
+ 2402               	.LSM319:
+ 2403 04c0 83E3      		ldi r24,lo8(51)
+ 2404 04c2 90E0      		ldi r25,hi8(51)
+ 2405 04c4 9093 CD00 		sts (204)+1,r25
+ 2406 04c8 8093 CC00 		sts 204,r24
+ 2407               	.LSM320:
+ 2408 04cc 86E0      		ldi r24,lo8(6)
+ 2409 04ce 8093 CA00 		sts 202,r24
+ 2410               	.LSM321:
+ 2411 04d2 1092 C800 		sts 200,__zero_reg__
+ 2412               	.LSM322:
+ 2413 04d6 88E1      		ldi r24,lo8(24)
+ 2414 04d8 8093 C900 		sts 201,r24
+ 2415               	.LSM323:
+ 2416 04dc 539A      		sbi 42-32,3
+ 2417               	.LSM324:
+ 2418 04de 5A9A      		sbi 43-32,2
+ 2419 04e0 88EE      		ldi r24,lo8(1000)
+ 2420 04e2 93E0      		ldi r25,hi8(1000)
+ 2421               	.LVL63:
+ 2422               	.LBE124:
+ 2423               	.LBE123:
+ 2424               	.LBB125:
+ 2425               	.LBB126:
+ 2426               	.LBB127:
+ 2427               	.LBB128:
+ 2428               	.LSM325:
+ 2429 04e4 28EC      		ldi r18,lo8(200)
+ 2430 04e6 30E0      		ldi r19,hi8(200)
+ 2431               	.L109:
+ 2432 04e8 F901      		movw r30,r18
+ 2433               	.LVL64:
+ 2434               	/* #APP */
+ 2435               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 2436 04ea 3197      		1: sbiw r30,1
+ 2437 04ec 01F4      		brne 1b
+ 2438               	 ;  0 "" 2
+ 2439               	/* #NOAPP */
+ 2440               	.LBE128:
+ 2441               	.LBE127:
+ 2442               	.LSM326:
+ 2443 04ee 0197      		sbiw r24,1
+ 2444               	.LSM327:
+ 2445 04f0 01F4      		brne .L109
+ 2446               	.LBE126:
+ 2447               	.LBE125:
+ 2448               	.LSM328:
+ 2449 04f2 80E0      		ldi r24,lo8(.LC22)
+ 2450 04f4 90E0      		ldi r25,hi8(.LC22)
+ 2451               	.LVL65:
+ 2452 04f6 0E94 0000 		call Serial_TxString
+ 2453               	.LVL66:
+ 2454               	.LSM329:
+ 2455 04fa 80E0      		ldi r24,lo8(.LC23)
+ 2456 04fc 90E0      		ldi r25,hi8(.LC23)
+ 2457 04fe 0E94 0000 		call Serial_TxString
+ 2458               	.LSM330:
+ 2459 0502 80E0      		ldi r24,lo8(.LC24)
+ 2460 0504 90E0      		ldi r25,hi8(.LC24)
+ 2461 0506 0E94 0000 		call Serial_TxString
+ 2462               	.LSM331:
+ 2463 050a 80E0      		ldi r24,lo8(.LC25)
+ 2464 050c 90E0      		ldi r25,hi8(.LC25)
+ 2465 050e 0E94 0000 		call Serial_TxString
+ 2466               	.LSM332:
+ 2467 0512 80E0      		ldi r24,lo8(.LC26)
+ 2468 0514 90E0      		ldi r25,hi8(.LC26)
+ 2469 0516 0E94 0000 		call Serial_TxString
+ 2470               	.LSM333:
+ 2471 051a 80E0      		ldi r24,lo8(.LC27)
+ 2472 051c 90E0      		ldi r25,hi8(.LC27)
+ 2473 051e 0E94 0000 		call Serial_TxString
+ 2474               	.LSM334:
+ 2475 0522 80E0      		ldi r24,lo8(.LC28)
+ 2476 0524 90E0      		ldi r25,hi8(.LC28)
+ 2477 0526 0E94 0000 		call Serial_TxString
+ 2478               	.LSM335:
+ 2479 052a 80E0      		ldi r24,lo8(.LC29)
+ 2480 052c 90E0      		ldi r25,hi8(.LC29)
+ 2481 052e 0E94 0000 		call Serial_TxString
+ 2482               	.LSM336:
+ 2483 0532 80E0      		ldi r24,lo8(.LC30)
+ 2484 0534 90E0      		ldi r25,hi8(.LC30)
+ 2485 0536 0E94 0000 		call Serial_TxString
+ 2486               	.LSM337:
+ 2487 053a 80E0      		ldi r24,lo8(.LC31)
+ 2488 053c 90E0      		ldi r25,hi8(.LC31)
+ 2489 053e 0E94 0000 		call Serial_TxString
+ 2490               	.LSM338:
+ 2491 0542 00D0      		rcall .
+ 2492 0544 00D0      		rcall .
+ 2493 0546 00D0      		rcall .
+ 2494 0548 EDB7      		in r30,__SP_L__
+ 2495 054a FEB7      		in r31,__SP_H__
+ 2496 054c 3196      		adiw r30,1
+ 2497 054e 8E01      		movw r16,r28
+ 2498 0550 055F      		subi r16,lo8(-(11))
+ 2499 0552 1F4F      		sbci r17,hi8(-(11))
+ 2500 0554 ADB7      		in r26,__SP_L__
+ 2501 0556 BEB7      		in r27,__SP_H__
+ 2502 0558 1296      		adiw r26,1+1
+ 2503 055a 1C93      		st X,r17
+ 2504 055c 0E93      		st -X,r16
+ 2505 055e 1197      		sbiw r26,1
+ 2506 0560 A0E0      		ldi r26,lo8(.LC32)
+ 2507 0562 EA2E      		mov r14,r26
+ 2508 0564 A0E0      		ldi r26,hi8(.LC32)
+ 2509 0566 FA2E      		mov r15,r26
+ 2510 0568 F382      		std Z+3,r15
+ 2511 056a E282      		std Z+2,r14
+ 2512 056c 8F81      		ldd r24,Y+7
+ 2513 056e 9927      		clr r25
+ 2514 0570 87FD      		sbrc r24,7
+ 2515 0572 9095      		com r25
+ 2516               	.LVL67:
+ 2517 0574 9583      		std Z+5,r25
+ 2518 0576 8483      		std Z+4,r24
+ 2519 0578 0E94 0000 		call sprintf
+ 2520               	.LVL68:
+ 2521               	.LSM339:
+ 2522 057c 8DB7      		in r24,__SP_L__
+ 2523 057e 9EB7      		in r25,__SP_H__
+ 2524 0580 0696      		adiw r24,6
+ 2525 0582 0FB6      		in __tmp_reg__,__SREG__
+ 2526 0584 F894      		cli
+ 2527 0586 9EBF      		out __SP_H__,r25
+ 2528 0588 0FBE      		out __SREG__,__tmp_reg__
+ 2529 058a 8DBF      		out __SP_L__,r24
+ 2530 058c C801      		movw r24,r16
+ 2531 058e 0E94 0000 		call Serial_TxString
+ 2532               	.LSM340:
+ 2533 0592 80E0      		ldi r24,lo8(.LC33)
+ 2534 0594 90E0      		ldi r25,hi8(.LC33)
+ 2535 0596 0E94 0000 		call Serial_TxString
+ 2536               	.LSM341:
+ 2537 059a 00D0      		rcall .
+ 2538 059c 00D0      		rcall .
+ 2539 059e 00D0      		rcall .
+ 2540 05a0 EDB7      		in r30,__SP_L__
+ 2541 05a2 FEB7      		in r31,__SP_H__
+ 2542 05a4 3196      		adiw r30,1
+ 2543 05a6 ADB7      		in r26,__SP_L__
+ 2544 05a8 BEB7      		in r27,__SP_H__
+ 2545 05aa 1296      		adiw r26,1+1
+ 2546 05ac 1C93      		st X,r17
+ 2547 05ae 0E93      		st -X,r16
+ 2548 05b0 1197      		sbiw r26,1
+ 2549 05b2 F382      		std Z+3,r15
+ 2550 05b4 E282      		std Z+2,r14
+ 2551 05b6 8885      		ldd r24,Y+8
+ 2552 05b8 8483      		std Z+4,r24
+ 2553 05ba 1582      		std Z+5,__zero_reg__
+ 2554 05bc 0E94 0000 		call sprintf
+ 2555               	.LSM342:
+ 2556 05c0 8DB7      		in r24,__SP_L__
+ 2557 05c2 9EB7      		in r25,__SP_H__
+ 2558 05c4 0696      		adiw r24,6
+ 2559 05c6 0FB6      		in __tmp_reg__,__SREG__
+ 2560 05c8 F894      		cli
+ 2561 05ca 9EBF      		out __SP_H__,r25
+ 2562 05cc 0FBE      		out __SREG__,__tmp_reg__
+ 2563 05ce 8DBF      		out __SP_L__,r24
+ 2564 05d0 C801      		movw r24,r16
+ 2565 05d2 0E94 0000 		call Serial_TxString
+ 2566               	.LSM343:
+ 2567 05d6 80E0      		ldi r24,lo8(.LC34)
+ 2568 05d8 90E0      		ldi r25,hi8(.LC34)
+ 2569 05da 0E94 0000 		call Serial_TxString
+ 2570               	.LSM344:
+ 2571 05de 00D0      		rcall .
+ 2572 05e0 00D0      		rcall .
+ 2573 05e2 00D0      		rcall .
+ 2574 05e4 EDB7      		in r30,__SP_L__
+ 2575 05e6 FEB7      		in r31,__SP_H__
+ 2576 05e8 3196      		adiw r30,1
+ 2577 05ea ADB7      		in r26,__SP_L__
+ 2578 05ec BEB7      		in r27,__SP_H__
+ 2579 05ee 1296      		adiw r26,1+1
+ 2580 05f0 1C93      		st X,r17
+ 2581 05f2 0E93      		st -X,r16
+ 2582 05f4 1197      		sbiw r26,1
+ 2583 05f6 F382      		std Z+3,r15
+ 2584 05f8 E282      		std Z+2,r14
+ 2585 05fa 8091 0000 		lds r24,Sensor2Value
+ 2586 05fe 9927      		clr r25
+ 2587 0600 87FD      		sbrc r24,7
+ 2588 0602 9095      		com r25
+ 2589 0604 9583      		std Z+5,r25
+ 2590 0606 8483      		std Z+4,r24
+ 2591 0608 0E94 0000 		call sprintf
+ 2592               	.LSM345:
+ 2593 060c 8DB7      		in r24,__SP_L__
+ 2594 060e 9EB7      		in r25,__SP_H__
+ 2595 0610 0696      		adiw r24,6
+ 2596 0612 0FB6      		in __tmp_reg__,__SREG__
+ 2597 0614 F894      		cli
+ 2598 0616 9EBF      		out __SP_H__,r25
+ 2599 0618 0FBE      		out __SREG__,__tmp_reg__
+ 2600 061a 8DBF      		out __SP_L__,r24
+ 2601 061c C801      		movw r24,r16
+ 2602 061e 0E94 0000 		call Serial_TxString
+ 2603               	.LSM346:
+ 2604 0622 80E0      		ldi r24,lo8(.LC35)
+ 2605 0624 90E0      		ldi r25,hi8(.LC35)
+ 2606 0626 0E94 0000 		call Serial_TxString
+ 2607               	.LSM347:
+ 2608 062a 00D0      		rcall .
+ 2609 062c 00D0      		rcall .
+ 2610 062e 00D0      		rcall .
+ 2611 0630 EDB7      		in r30,__SP_L__
+ 2612 0632 FEB7      		in r31,__SP_H__
+ 2613 0634 3196      		adiw r30,1
+ 2614 0636 ADB7      		in r26,__SP_L__
+ 2615 0638 BEB7      		in r27,__SP_H__
+ 2616 063a 1296      		adiw r26,1+1
+ 2617 063c 1C93      		st X,r17
+ 2618 063e 0E93      		st -X,r16
+ 2619 0640 1197      		sbiw r26,1
+ 2620 0642 F382      		std Z+3,r15
+ 2621 0644 E282      		std Z+2,r14
+ 2622 0646 8091 0000 		lds r24,Sensor3Value
+ 2623 064a 9927      		clr r25
+ 2624 064c 87FD      		sbrc r24,7
+ 2625 064e 9095      		com r25
+ 2626 0650 9583      		std Z+5,r25
+ 2627 0652 8483      		std Z+4,r24
+ 2628 0654 0E94 0000 		call sprintf
+ 2629               	.LSM348:
+ 2630 0658 8DB7      		in r24,__SP_L__
+ 2631 065a 9EB7      		in r25,__SP_H__
+ 2632 065c 0696      		adiw r24,6
+ 2633 065e 0FB6      		in __tmp_reg__,__SREG__
+ 2634 0660 F894      		cli
+ 2635 0662 9EBF      		out __SP_H__,r25
+ 2636 0664 0FBE      		out __SREG__,__tmp_reg__
+ 2637 0666 8DBF      		out __SP_L__,r24
+ 2638 0668 C801      		movw r24,r16
+ 2639 066a 0E94 0000 		call Serial_TxString
+ 2640               	.LSM349:
+ 2641 066e 80E0      		ldi r24,lo8(.LC36)
+ 2642 0670 90E0      		ldi r25,hi8(.LC36)
+ 2643 0672 0E94 0000 		call Serial_TxString
+ 2644               	.LSM350:
+ 2645 0676 1092 0000 		sts (WebEnableCounter)+1,__zero_reg__
+ 2646 067a 1092 0000 		sts WebEnableCounter,__zero_reg__
+ 2647               	.LVL69:
+ 2648               	.L106:
+ 2649               	.LSM351:
+ 2650 067e 8091 0000 		lds r24,CurrentLoggingTicks
+ 2651 0682 9091 0000 		lds r25,(CurrentLoggingTicks)+1
+ 2652 0686 2091 0000 		lds r18,LoggingInterval500MS_SRAM
+ 2653 068a 3091 0000 		lds r19,(LoggingInterval500MS_SRAM)+1
+ 2654 068e 0196      		adiw r24,1
+ 2655 0690 9093 0000 		sts (CurrentLoggingTicks)+1,r25
+ 2656 0694 8093 0000 		sts CurrentLoggingTicks,r24
+ 2657 0698 0197      		sbiw r24,1
+ 2658 069a 8217      		cp r24,r18
+ 2659 069c 9307      		cpc r25,r19
+ 2660 069e 00F4      		brsh .+2
+ 2661 06a0 00C0      		rjmp .L126
+ 2662               	.LSM352:
+ 2663 06a2 1092 0000 		sts (CurrentLoggingTicks)+1,__zero_reg__
+ 2664 06a6 1092 0000 		sts CurrentLoggingTicks,__zero_reg__
+ 2665               	.LBB129:
+ 2666               	.LBB130:
+ 2667               	.LSM353:
+ 2668 06aa 8BB1      		in r24,43-32
+ 2669 06ac 8F70      		andi r24,lo8(15)
+ 2670 06ae 8062      		ori r24,lo8(32)
+ 2671 06b0 8BB9      		out 43-32,r24
+ 2672               	.LBE130:
+ 2673               	.LBE129:
+ 2674               	.LSM354:
+ 2675 06b2 3799      		sbic 38-32,7
+ 2676 06b4 00C0      		rjmp .L111
+ 2677               	.LBB131:
+ 2678               	.LSM355:
+ 2679 06b6 8091 0000 		lds r24,LogfileCreateSuccess
+ 2680 06ba 282F      		mov r18,r24
+ 2681 06bc 30E0      		ldi r19,lo8(0)
+ 2682 06be 40E0      		ldi r20,lo8(0)
+ 2683 06c0 50E0      		ldi r21,hi8(0)
+ 2684 06c2 9981      		ldd r25,Y+1
+ 2685 06c4 8091 0000 		lds r24,oldday
+ 2686 06c8 9817      		cp r25,r24
+ 2687 06ca 01F0      		breq .L113
+ 2688               	.LVL70:
+ 2689 06cc 41E0      		ldi r20,lo8(1)
+ 2690 06ce 50E0      		ldi r21,hi8(1)
+ 2691               	.L113:
+ 2692 06d0 2423      		and r18,r20
+ 2693 06d2 3523      		and r19,r21
+ 2694 06d4 232B      		or r18,r19
+ 2695 06d6 01F0      		breq .L112
+ 2696               	.LBB132:
+ 2697               	.LBB133:
+ 2698               	.LSM356:
+ 2699 06d8 8BB1      		in r24,43-32
+ 2700 06da 8F70      		andi r24,lo8(15)
+ 2701 06dc 8061      		ori r24,lo8(16)
+ 2702 06de 8BB9      		out 43-32,r24
+ 2703               	.LBE133:
+ 2704               	.LBE132:
+ 2705               	.LSM357:
+ 2706 06e0 0E94 0000 		call CloseLogFile
+ 2707               	.LVL71:
+ 2708               	.LSM358:
+ 2709 06e4 6091 0000 		lds r22,DaysLeft_SRAM
+ 2710 06e8 7091 0000 		lds r23,(DaysLeft_SRAM)+1
+ 2711 06ec 6150      		subi r22,lo8(-(-1))
+ 2712 06ee 7040      		sbci r23,hi8(-(-1))
+ 2713 06f0 7093 0000 		sts (DaysLeft_SRAM)+1,r23
+ 2714 06f4 6093 0000 		sts DaysLeft_SRAM,r22
+ 2715               	.LSM359:
+ 2716 06f8 80E0      		ldi r24,lo8(DaysLeft_EEPROM)
+ 2717 06fa 90E0      		ldi r25,hi8(DaysLeft_EEPROM)
+ 2718 06fc 0E94 0000 		call __eeupd_word_usb1287
+ 2719 0700 84EC      		ldi r24,lo8(2500)
+ 2720 0702 99E0      		ldi r25,hi8(2500)
+ 2721               	.LVL72:
+ 2722               	.LBB134:
+ 2723               	.LBB135:
+ 2724               	.LBB136:
+ 2725               	.LBB137:
+ 2726               	.LSM360:
+ 2727 0704 28EC      		ldi r18,lo8(200)
+ 2728 0706 30E0      		ldi r19,hi8(200)
+ 2729               	.L114:
+ 2730 0708 F901      		movw r30,r18
+ 2731               	.LVL73:
+ 2732               	/* #APP */
+ 2733               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 2734 070a 3197      		1: sbiw r30,1
+ 2735 070c 01F4      		brne 1b
+ 2736               	 ;  0 "" 2
+ 2737               	/* #NOAPP */
+ 2738               	.LBE137:
+ 2739               	.LBE136:
+ 2740               	.LSM361:
+ 2741 070e 0197      		sbiw r24,1
+ 2742               	.LSM362:
+ 2743 0710 01F4      		brne .L114
+ 2744               	.LBE135:
+ 2745               	.LBE134:
+ 2746               	.LSM363:
+ 2747 0712 0E94 0000 		call OpenLogFile
+ 2748               	.LVL74:
+ 2749 0716 84EC      		ldi r24,lo8(2500)
+ 2750 0718 99E0      		ldi r25,hi8(2500)
+ 2751               	.LVL75:
+ 2752               	.LBB138:
+ 2753               	.LBB139:
+ 2754               	.LBB140:
+ 2755               	.LBB141:
+ 2756               	.LSM364:
+ 2757 071a 28EC      		ldi r18,lo8(200)
+ 2758 071c 30E0      		ldi r19,hi8(200)
+ 2759               	.L115:
+ 2760 071e F901      		movw r30,r18
+ 2761               	.LVL76:
+ 2762               	/* #APP */
+ 2763               	 ;  105 "c:/winavr-20100110/lib/gcc/../../avr/include/util/delay_basic.h" 1
+ 2764 0720 3197      		1: sbiw r30,1
+ 2765 0722 01F4      		brne 1b
+ 2766               	 ;  0 "" 2
+ 2767               	/* #NOAPP */
+ 2768               	.LBE141:
+ 2769               	.LBE140:
+ 2770               	.LSM365:
+ 2771 0724 0197      		sbiw r24,1
+ 2772               	.LSM366:
+ 2773 0726 01F4      		brne .L115
+ 2774               	.LVL77:
+ 2775               	.L112:
+ 2776               	.LBE139:
+ 2777               	.LBE138:
+ 2778               	.LSM367:
+ 2779 0728 8091 0000 		lds r24,Sensor2Received
+ 2780               	.LVL78:
+ 2781 072c 90E0      		ldi r25,lo8(0)
+ 2782 072e 2091 0000 		lds r18,LogfileCreateSuccess
+ 2783 0732 30E0      		ldi r19,lo8(0)
+ 2784 0734 8223      		and r24,r18
+ 2785 0736 9323      		and r25,r19
+ 2786 0738 2091 0000 		lds r18,Sensor3Received
+ 2787 073c 30E0      		ldi r19,lo8(0)
+ 2788 073e 8223      		and r24,r18
+ 2789 0740 9323      		and r25,r19
+ 2790 0742 892B      		or r24,r25
+ 2791 0744 01F4      		brne .+2
+ 2792 0746 00C0      		rjmp .L116
+ 2793               	.LSM368:
+ 2794 0748 ADB7      		in r26,__SP_L__
+ 2795 074a BEB7      		in r27,__SP_H__
+ 2796 074c 5297      		sbiw r26,18
+ 2797 074e 0FB6      		in __tmp_reg__,__SREG__
+ 2798 0750 F894      		cli
+ 2799 0752 BEBF      		out __SP_H__,r27
+ 2800 0754 0FBE      		out __SREG__,__tmp_reg__
+ 2801 0756 ADBF      		out __SP_L__,r26
+ 2802 0758 EDB7      		in r30,__SP_L__
+ 2803 075a FEB7      		in r31,__SP_H__
+ 2804               	.LVL79:
+ 2805 075c 3196      		adiw r30,1
+ 2806 075e 8E01      		movw r16,r28
+ 2807 0760 055F      		subi r16,lo8(-(11))
+ 2808 0762 1F4F      		sbci r17,hi8(-(11))
+ 2809 0764 1296      		adiw r26,1+1
+ 2810 0766 1C93      		st X,r17
+ 2811 0768 0E93      		st -X,r16
+ 2812 076a 1197      		sbiw r26,1
+ 2813 076c 80E0      		ldi r24,lo8(.LC37)
+ 2814 076e 90E0      		ldi r25,hi8(.LC37)
+ 2815 0770 9383      		std Z+3,r25
+ 2816 0772 8283      		std Z+2,r24
+ 2817 0774 8C81      		ldd r24,Y+4
+ 2818 0776 8483      		std Z+4,r24
+ 2819 0778 1582      		std Z+5,__zero_reg__
+ 2820 077a 8D81      		ldd r24,Y+5
+ 2821 077c 8683      		std Z+6,r24
+ 2822 077e 1782      		std Z+7,__zero_reg__
+ 2823 0780 8E81      		ldd r24,Y+6
+ 2824 0782 8087      		std Z+8,r24
+ 2825 0784 1186      		std Z+9,__zero_reg__
+ 2826 0786 8F81      		ldd r24,Y+7
+ 2827 0788 9927      		clr r25
+ 2828 078a 87FD      		sbrc r24,7
+ 2829 078c 9095      		com r25
+ 2830               	.LVL80:
+ 2831 078e 9387      		std Z+11,r25
+ 2832 0790 8287      		std Z+10,r24
+ 2833 0792 8885      		ldd r24,Y+8
+ 2834               	.LVL81:
+ 2835 0794 8487      		std Z+12,r24
+ 2836 0796 1586      		std Z+13,__zero_reg__
+ 2837 0798 8091 0000 		lds r24,Sensor2Value
+ 2838 079c 9927      		clr r25
+ 2839 079e 87FD      		sbrc r24,7
+ 2840 07a0 9095      		com r25
+ 2841 07a2 9787      		std Z+15,r25
+ 2842 07a4 8687      		std Z+14,r24
+ 2843 07a6 8091 0000 		lds r24,Sensor3Value
+ 2844 07aa 9927      		clr r25
+ 2845 07ac 87FD      		sbrc r24,7
+ 2846 07ae 9095      		com r25
+ 2847 07b0 918B      		std Z+17,r25
+ 2848 07b2 808B      		std Z+16,r24
+ 2849 07b4 0E94 0000 		call sprintf
+ 2850 07b8 AC01      		movw r20,r24
+ 2851 07ba 8987      		std Y+9,r24
+ 2852               	.LVL82:
+ 2853 07bc 5A87      		std Y+10,r21
+ 2854               	.LVL83:
+ 2855               	.LSM369:
+ 2856 07be 8DB7      		in r24,__SP_L__
+ 2857 07c0 9EB7      		in r25,__SP_H__
+ 2858 07c2 4296      		adiw r24,18
+ 2859 07c4 0FB6      		in __tmp_reg__,__SREG__
+ 2860 07c6 F894      		cli
+ 2861 07c8 9EBF      		out __SP_H__,r25
+ 2862 07ca 0FBE      		out __SREG__,__tmp_reg__
+ 2863 07cc 8DBF      		out __SP_L__,r24
+ 2864 07ce 80E0      		ldi r24,lo8(TempLogFile)
+ 2865 07d0 90E0      		ldi r25,hi8(TempLogFile)
+ 2866 07d2 B801      		movw r22,r16
+ 2867 07d4 9E01      		movw r18,r28
+ 2868 07d6 275F      		subi r18,lo8(-(9))
+ 2869 07d8 3F4F      		sbci r19,hi8(-(9))
+ 2870 07da 0E94 0000 		call f_write
+ 2871               	.LSM370:
+ 2872 07de 80E0      		ldi r24,lo8(TempLogFile)
+ 2873 07e0 90E0      		ldi r25,hi8(TempLogFile)
+ 2874 07e2 0E94 0000 		call f_sync
+ 2875               	.LVL84:
+ 2876               	.L116:
+ 2877               	.LBB142:
+ 2878               	.LBB143:
+ 2879               	.LSM371:
+ 2880 07e6 8BB1      		in r24,43-32
+ 2881 07e8 8F70      		andi r24,lo8(15)
+ 2882 07ea 8BB9      		out 43-32,r24
+ 2883               	.LBE143:
+ 2884               	.LBE142:
+ 2885               	.LSM372:
+ 2886 07ec 81E0      		ldi r24,lo8(1)
+ 2887 07ee 90E0      		ldi r25,hi8(1)
+ 2888 07f0 64E1      		ldi r22,lo8(20)
+ 2889 07f2 70E0      		ldi r23,hi8(20)
+ 2890 07f4 0E94 0000 		call lcd_pos
+ 2891               	.LVL85:
+ 2892               	.LSM373:
+ 2893 07f8 8F81      		ldd r24,Y+7
+ 2894 07fa 482F      		mov r20,r24
+ 2895 07fc 5527      		clr r21
+ 2896 07fe 47FD      		sbrc r20,7
+ 2897 0800 5095      		com r21
+ 2898 0802 8091 0000 		lds r24,Sensor1PreviousValue
+ 2899 0806 282F      		mov r18,r24
+ 2900 0808 3327      		clr r19
+ 2901 080a 27FD      		sbrc r18,7
+ 2902 080c 3095      		com r19
+ 2903 080e C901      		movw r24,r18
+ 2904 0810 0196      		adiw r24,1
+ 2905 0812 8417      		cp r24,r20
+ 2906 0814 9507      		cpc r25,r21
+ 2907 0816 04F4      		brge .L117
+ 2908 0818 80E0      		ldi r24,lo8(0)
+ 2909 081a 00C0      		rjmp .L132
+ 2910               	.L117:
+ 2911               	.LSM374:
+ 2912 081c 2150      		subi r18,lo8(-(-1))
+ 2913 081e 3040      		sbci r19,hi8(-(-1))
+ 2914 0820 4217      		cp r20,r18
+ 2915 0822 5307      		cpc r21,r19
+ 2916 0824 04F4      		brge .L119
+ 2917 0826 81E0      		ldi r24,lo8(1)
+ 2918               	.L132:
+ 2919 0828 61E0      		ldi r22,lo8(1)
+ 2920 082a 0E94 0000 		call lcd_write
+ 2921 082e 00C0      		rjmp .L118
+ 2922               	.L119:
+ 2923               	.LSM375:
+ 2924 0830 80E0      		ldi r24,lo8(.LC17)
+ 2925 0832 90E0      		ldi r25,hi8(.LC17)
+ 2926 0834 0E94 0000 		call lcd_print_str
+ 2927               	.L118:
+ 2928               	.LSM376:
+ 2929 0838 8F81      		ldd r24,Y+7
+ 2930 083a 8093 0000 		sts Sensor1PreviousValue,r24
+ 2931               	.LSM377:
+ 2932 083e 82E0      		ldi r24,lo8(2)
+ 2933 0840 90E0      		ldi r25,hi8(2)
+ 2934 0842 64E1      		ldi r22,lo8(20)
+ 2935 0844 70E0      		ldi r23,hi8(20)
+ 2936 0846 0E94 0000 		call lcd_pos
+ 2937               	.LSM378:
+ 2938 084a 9091 0000 		lds r25,Sensor2Value
+ 2939 084e 8091 0000 		lds r24,Sensor2PreviousValue
+ 2940 0852 8917      		cp r24,r25
+ 2941 0854 04F4      		brge .L120
+ 2942 0856 80E0      		ldi r24,lo8(0)
+ 2943 0858 00C0      		rjmp .L133
+ 2944               	.L120:
+ 2945               	.LSM379:
+ 2946 085a 9817      		cp r25,r24
+ 2947 085c 04F4      		brge .L122
+ 2948 085e 81E0      		ldi r24,lo8(1)
+ 2949               	.L133:
+ 2950 0860 61E0      		ldi r22,lo8(1)
+ 2951 0862 0E94 0000 		call lcd_write
+ 2952 0866 00C0      		rjmp .L121
+ 2953               	.L122:
+ 2954               	.LSM380:
+ 2955 0868 80E0      		ldi r24,lo8(.LC17)
+ 2956 086a 90E0      		ldi r25,hi8(.LC17)
+ 2957 086c 0E94 0000 		call lcd_print_str
+ 2958               	.L121:
+ 2959               	.LSM381:
+ 2960 0870 8091 0000 		lds r24,Sensor2Value
+ 2961 0874 8093 0000 		sts Sensor2PreviousValue,r24
+ 2962               	.LSM382:
+ 2963 0878 83E0      		ldi r24,lo8(3)
+ 2964 087a 90E0      		ldi r25,hi8(3)
+ 2965 087c 64E1      		ldi r22,lo8(20)
+ 2966 087e 70E0      		ldi r23,hi8(20)
+ 2967 0880 0E94 0000 		call lcd_pos
+ 2968               	.LSM383:
+ 2969 0884 9091 0000 		lds r25,Sensor3Value
+ 2970 0888 8091 0000 		lds r24,Sensor3PreviousValue
+ 2971 088c 8917      		cp r24,r25
+ 2972 088e 04F4      		brge .L123
+ 2973 0890 80E0      		ldi r24,lo8(0)
+ 2974 0892 00C0      		rjmp .L134
+ 2975               	.L123:
+ 2976               	.LSM384:
+ 2977 0894 9817      		cp r25,r24
+ 2978 0896 04F4      		brge .L125
+ 2979 0898 81E0      		ldi r24,lo8(1)
+ 2980               	.L134:
+ 2981 089a 61E0      		ldi r22,lo8(1)
+ 2982 089c 0E94 0000 		call lcd_write
+ 2983 08a0 00C0      		rjmp .L124
+ 2984               	.L125:
+ 2985               	.LSM385:
+ 2986 08a2 80E0      		ldi r24,lo8(.LC17)
+ 2987 08a4 90E0      		ldi r25,hi8(.LC17)
+ 2988 08a6 0E94 0000 		call lcd_print_str
+ 2989               	.L124:
+ 2990               	.LSM386:
+ 2991 08aa 8091 0000 		lds r24,Sensor3Value
+ 2992 08ae 8093 0000 		sts Sensor3PreviousValue,r24
+ 2993               	.LBB144:
+ 2994               	.LBB145:
+ 2995               	.LSM387:
+ 2996 08b2 8BB1      		in r24,43-32
+ 2997 08b4 8F70      		andi r24,lo8(15)
+ 2998 08b6 8BB9      		out 43-32,r24
+ 2999 08b8 00C0      		rjmp .L126
+ 3000               	.LVL86:
+ 3001               	.L111:
+ 3002               	.LBE145:
+ 3003               	.LBE144:
+ 3004               	.LBE131:
+ 3005               	.LBB146:
+ 3006               	.LBB147:
+ 3007 08ba 8BB1      		in r24,43-32
+ 3008 08bc 90EF      		ldi r25,lo8(-16)
+ 3009 08be 9922      		and r9,r25
+ 3010 08c0 8F70      		andi r24,lo8(15)
+ 3011 08c2 982A      		or r9,r24
+ 3012 08c4 9BB8      		out 43-32,r9
+ 3013               	.LVL87:
+ 3014               	.L126:
+ 3015               	/* epilogue start */
+ 3016               	.LBE147:
+ 3017               	.LBE146:
+ 3018               	.LSM388:
+ 3019 08c6 A896      		adiw r28,40
+ 3020 08c8 DEBF      		out __SP_H__,r29
+ 3021 08ca CDBF      		out __SP_L__,r28
+ 3022 08cc CF91      		pop r28
+ 3023 08ce DF91      		pop r29
+ 3024 08d0 FF91      		pop r31
+ 3025 08d2 EF91      		pop r30
+ 3026 08d4 BF91      		pop r27
+ 3027 08d6 AF91      		pop r26
+ 3028 08d8 9F91      		pop r25
+ 3029 08da 8F91      		pop r24
+ 3030 08dc 7F91      		pop r23
+ 3031 08de 6F91      		pop r22
+ 3032 08e0 5F91      		pop r21
+ 3033 08e2 4F91      		pop r20
+ 3034 08e4 3F91      		pop r19
+ 3035 08e6 2F91      		pop r18
+ 3036 08e8 1F91      		pop r17
+ 3037               	.LVL88:
+ 3038 08ea 0F91      		pop r16
+ 3039 08ec FF90      		pop r15
+ 3040 08ee EF90      		pop r14
+ 3041 08f0 DF90      		pop r13
+ 3042 08f2 CF90      		pop r12
+ 3043 08f4 BF90      		pop r11
+ 3044 08f6 AF90      		pop r10
+ 3045 08f8 9F90      		pop r9
+ 3046 08fa 0F90      		pop r0
+ 3047 08fc 0BBE      		out 91-32,r0
+ 3048 08fe 0F90      		pop r0
+ 3049 0900 0FBE      		out __SREG__,r0
+ 3050 0902 0F90      		pop r0
+ 3051 0904 1F90      		pop __zero_reg__
+ 3052 0906 1895      		reti
+ 3053               	.LFE133:
+ 3055               	.global	Disk_MS_Interface
+ 3056               		.data
+ 3059               	Disk_MS_Interface:
+ 3060 0200 00        		.byte	0
+ 3061 0201 03        		.byte	3
+ 3062 0202 4000      		.word	64
+ 3063 0204 00        		.byte	0
+ 3064 0205 04        		.byte	4
+ 3065 0206 4000      		.word	64
+ 3066 0208 00        		.byte	0
+ 3067 0209 01        		.byte	1
+ 3068 020a 0000 0000 		.skip 45,0
+ 3068      0000 0000 
+ 3068      0000 0000 
+ 3068      0000 0000 
+ 3068      0000 0000 
+ 3069               	.global	Generic_HID_Interface
+ 3072               	Generic_HID_Interface:
+ 3073 0237 01        		.byte	1
+ 3074 0238 01        		.byte	1
+ 3075 0239 2000      		.word	32
+ 3076 023b 00        		.byte	0
+ 3077 023c 0000      		.word	PrevHIDReportBuffer
+ 3078 023e 2B        		.byte	43
+ 3079 023f 0000 0000 		.skip 5,0
+ 3079      00
+ 3080               	.global	LoggingInterval500MS_EEPROM
+ 3081               		.section	.eeprom,"aw",@progbits
+ 3084               	LoggingInterval500MS_EEPROM:
+ 3085 0000 1400      		.word	20
+ 3086               	.global	Sensor1Name_EEPROM
+ 3089               	Sensor1Name_EEPROM:
+ 3090 0002 5365 6E73 		.ascii	"Sensor 1"
+ 3090      6F72 2031 
+ 3091               	.global	Sensor1MinValue
+ 3092               	.global	Sensor1MinValue
+ 3093               		.section .bss
+ 3096               	Sensor1MinValue:
+ 3097 0000 00        		.skip 1,0
+ 3098               	.global	Sensor1Received
+ 3099               	.global	Sensor1Received
+ 3102               	Sensor1Received:
+ 3103 0001 00        		.skip 1,0
+ 3104               	.global	Sensor2Name_EEPROM
+ 3105               		.section	.eeprom
+ 3108               	Sensor2Name_EEPROM:
+ 3109 000a 5365 6E73 		.ascii	"Sensor 2"
+ 3109      6F72 2032 
+ 3110               	.global	Sensor2Value
+ 3111               	.global	Sensor2Value
+ 3112               		.section .bss
+ 3115               	Sensor2Value:
+ 3116 0002 00        		.skip 1,0
+ 3117               	.global	Sensor2Received
+ 3118               	.global	Sensor2Received
+ 3121               	Sensor2Received:
+ 3122 0003 00        		.skip 1,0
+ 3123               	.global	Sensor3Name_EEPROM
+ 3124               		.section	.eeprom
+ 3127               	Sensor3Name_EEPROM:
+ 3128 0012 5365 6E73 		.ascii	"Sensor 3"
+ 3128      6F72 2033 
+ 3129               	.global	Sensor3Value
+ 3130               	.global	Sensor3Value
+ 3131               		.section .bss
+ 3134               	Sensor3Value:
+ 3135 0004 00        		.skip 1,0
+ 3136               	.global	Sensor3Received
+ 3137               	.global	Sensor3Received
+ 3140               	Sensor3Received:
+ 3141 0005 00        		.skip 1,0
+ 3142               		.comm Din,2,1
+ 3143               		.comm n,2,1
+ 3144               		.comm Checksum,1,1
+ 3145               		.comm U1input,2,1
+ 3146               		.comm PrevHIDReportBuffer,43,1
+ 3147               		.comm LoggingInterval500MS_SRAM,2,1
+ 3148               		.comm oldday,1,1
+ 3149               		.comm Sensor1Name_SRAM,9,1
+ 3150               		.comm Sensor1Correction_SRAM,1,1
+ 3151               		.comm Sensor1PreviousValue,1,1
+ 3152               		.comm Sensor1MaxValue,1,1
+ 3153               	.global	Sensor1Correction_EEPROM
+ 3154               		.section	.eeprom
+ 3157               	Sensor1Correction_EEPROM:
+ 3158 001a 00        		.skip 1,0
+ 3159               		.comm Sensor2Name_SRAM,9,1
+ 3160               		.comm Sensor2PreviousValue,1,1
+ 3161               		.comm Sensor2Correction_SRAM,1,1
+ 3162               		.comm Sensor2MinValue,1,1
+ 3163               		.comm Sensor2MaxValue,1,1
+ 3164               	.global	Sensor2Correction_EEPROM
+ 3167               	Sensor2Correction_EEPROM:
+ 3168 001b 00        		.skip 1,0
+ 3169               		.comm Sensor3Name_SRAM,9,1
+ 3170               		.comm Sensor3PreviousValue,1,1
+ 3171               		.comm Sensor3Correction_SRAM,1,1
+ 3172               		.comm Sensor3MinValue,1,1
+ 3173               		.comm Sensor3MaxValue,1,1
+ 3174               	.global	Sensor3Correction_EEPROM
+ 3177               	Sensor3Correction_EEPROM:
+ 3178 001c 00        		.skip 1,0
+ 3179               		.comm CurrentLoggingTicks,2,1
+ 3180               		.comm DataReceived,1,1
+ 3181               		.comm recbuf,10,1
+ 3182               		.comm bufferposition,1,1
+ 3183               		.comm rec_started,1,1
+ 3184               		.comm Sensor2Timeout,2,1
+ 3185               		.comm Sensor3Timeout,2,1
+ 3186               		.comm LogfileCreateSuccess,1,1
+ 3187               		.comm ReceiverRestart,1,1
+ 3188               		.comm FreeMemory,4,1
+ 3189               		.comm DaysLeft_SRAM,2,1
+ 3190               	.global	DaysLeft_EEPROM
+ 3193               	DaysLeft_EEPROM:
+ 3194 001d 0000      		.skip 2,0
+ 3195               		.comm DiskFATState,558,1
+ 3196               		.comm TempLogFile,32,1
+ 3197               		.comm WebEnableCounter,2,1
+ 3334               	.Letext0:
+DEFINED SYMBOLS
+                            *ABS*:00000000 TempDataLogger.c
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:2      *ABS*:0000003f __SREG__
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3      *ABS*:0000003e __SP_H__
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:4      *ABS*:0000003d __SP_L__
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:5      *ABS*:00000034 __CCP__
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:6      *ABS*:00000000 __tmp_reg__
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:7      *ABS*:00000001 __zero_reg__
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:22     .text.CALLBACK_HID_Device_ProcessHIDReport:00000000 CALLBACK_HID_Device_ProcessHIDReport
+                            *COM*:00000002 LoggingInterval500MS_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3084   .eeprom:00000000 LoggingInterval500MS_EEPROM
+                            *COM*:00000001 Sensor1Correction_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3157   .eeprom:0000001a Sensor1Correction_EEPROM
+                            *COM*:00000001 Sensor2Correction_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3167   .eeprom:0000001b Sensor2Correction_EEPROM
+                            *COM*:00000001 Sensor3Correction_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3177   .eeprom:0000001c Sensor3Correction_EEPROM
+                            *COM*:00000002 DaysLeft_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3193   .eeprom:0000001d DaysLeft_EEPROM
+                            *COM*:00000009 Sensor1Name_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3089   .eeprom:00000002 Sensor1Name_EEPROM
+                            *COM*:00000009 Sensor2Name_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3108   .eeprom:0000000a Sensor2Name_EEPROM
+                            *COM*:00000009 Sensor3Name_SRAM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3127   .eeprom:00000012 Sensor3Name_EEPROM
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:236    .text.CALLBACK_HID_Device_CreateHIDReport:00000000 CALLBACK_HID_Device_CreateHIDReport
+                            *COM*:00000004 FreeMemory
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:386    .text.CALLBACK_MS_Device_SCSICommandReceived:00000000 CALLBACK_MS_Device_SCSICommandReceived
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:421    .text.EVENT_USB_Device_ControlRequest:00000000 EVENT_USB_Device_ControlRequest
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3059   .data:00000200 Disk_MS_Interface
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3072   .data:00000237 Generic_HID_Interface
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:442    .text.EVENT_USB_Device_Suspend:00000000 EVENT_USB_Device_Suspend
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:457    .text.EVENT_USB_Device_ConfigurationChanged:00000000 EVENT_USB_Device_ConfigurationChanged
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:511    .text.GetCorrectionValues:00000000 GetCorrectionValues
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:621    .text.SetupHardware:00000000 SetupHardware
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1045   .text.CloseLogFile:00000000 CloseLogFile
+                            *COM*:00000020 TempLogFile
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1073   .text.EVENT_USB_Device_Connect:00000000 EVENT_USB_Device_Connect
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1108   .text.OpenLogFile:00000000 OpenLogFile
+                            *COM*:00000001 oldday
+                            *COM*:0000022e DiskFATState
+                            *COM*:00000001 LogfileCreateSuccess
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1287   .text.EVENT_USB_Device_Disconnect:00000000 EVENT_USB_Device_Disconnect
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1316   .text.RadioReceive:00000000 RadioReceive
+                            *COM*:00000001 DataReceived
+                            *COM*:00000001 rec_started
+                            *COM*:00000001 bufferposition
+                            *COM*:0000000a recbuf
+                            *COM*:00000001 Checksum
+                            *COM*:00000001 Sensor2PreviousValue
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3115   .bss:00000002 Sensor2Value
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3121   .bss:00000003 Sensor2Received
+                            *COM*:00000001 Sensor2MinValue
+                            *COM*:00000001 Sensor2MaxValue
+                            *COM*:00000002 Sensor2Timeout
+                            *COM*:00000001 Sensor3PreviousValue
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3134   .bss:00000004 Sensor3Value
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3140   .bss:00000005 Sensor3Received
+                            *COM*:00000001 Sensor3MinValue
+                            *COM*:00000001 Sensor3MaxValue
+                            *COM*:00000002 Sensor3Timeout
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1625   .text.main:00000000 main
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:1722   .text.__vector_17:00000000 __vector_17
+                            *COM*:00000001 Sensor1PreviousValue
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3102   .bss:00000001 Sensor1Received
+C:\Users\kriedel\AppData\Local\Temp/ccXcaIo3.s:3096   .bss:00000000 Sensor1MinValue
+                            *COM*:00000001 Sensor1MaxValue
+                            *COM*:00000002 CurrentLoggingTicks
+                            *COM*:00000002 WebEnableCounter
+                            *COM*:0000002b PrevHIDReportBuffer
+                            *COM*:00000002 Din
+                            *COM*:00000002 n
+                            *COM*:00000002 U1input
+                            *COM*:00000001 ReceiverRestart
+
+UNDEFINED SYMBOLS
+DS1307_SetDate
+DS1307_SetTime
+__eeupd_word_usb1287
+__eeupd_byte_usb1287
+lcd_clear
+__eeupd_block_usb1287
+lcd_print_str
+lcd_pos
+DS1307_GetDate
+DS1307_GetTime
+HYT321_GetData
+SCSI_DecodeSCSICommand
+MS_Device_ProcessControlRequest
+HID_Device_ProcessControlRequest
+USB_ResetInterface
+MS_Device_ConfigureEndpoints
+HID_Device_ConfigureEndpoints
+__eerd_block_usb1287
+strcpy
+__eerd_byte_usb1287
+__eerd_word_usb1287
+lcd_init
+USB_Init
+DataflashManager_ResetDataflashProtections
+sprintf
+lcd_print_value
+RFM12_Init
+Enable_receiver
+f_sync
+f_close
+f_mount
+f_open
+f_lseek
+f_getfree
+Spi16
+atoi
+RestartFifoFill_receiver
+MS_Device_USBTask
+HID_Device_USBTask
+USB_USBTask
+lcd_write
+Serial_TxString
+f_write
+__do_copy_data
+__do_clear_bss
