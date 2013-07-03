@@ -1,10 +1,10 @@
 Datalogger
 ==========
 
-Temperature and humditiy data logging
+Temperature and humidity data logging
 
 
-The Radio Data Logger project is based on the LUFA TempDataLogger Demo project and published in Funkamateur 5/2012.
+The Radio Data Logger project is based on the LUFA TempDataLogger Demo project and published in Funkamateur 5/2012 (http://www.funkamateur.de/).
 
    The project is a data logger for the current local temperature and humidity and additional two radio sensors for logging
    of distantly temperatures, writing the  measured values to a file stored on the board's Dataflash in a FAT filesystem each
@@ -23,7 +23,7 @@ The Radio Data Logger project is based on the LUFA TempDataLogger Demo project a
    A RFM12 radio modul from HopeRF is connected for receiving the signals from the external radio temperature sensors. Each radio 
    sensor contains also a RFM12 modul and a eZ430-F2012 from TI with a MSP430F2012 as controller.
    
-   A ethernet modul from Wiznet is connected to store data on a webserver in the cloud like online service Xively or Thingspeak. You
+   A ethernet modul from Wiznet is connected to store data on a webserver in the cloud like Xively or Thingspeak. You
    can call up the data from everywhere. Data is displayed as a linechart for each logged value. In order to save energy the ethernet modul
    is only actived on demand from the controller.
  
