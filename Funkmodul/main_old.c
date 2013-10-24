@@ -11,11 +11,11 @@
 #include "intrinsics.h"
 //#include "stdio.h"      // by use of printf
 
-#define Nsel P1OUT_bit.P1 
-#define Sdi P1OUT_bit.P0
-#define Sdo P1IN_bit.P2
-#define Sck P1OUT_bit.P3
-#define Ntc P1OUT_bit.P7
+#define Nsel P1OUT_bit.P1OUT_1 
+#define Sdi P1OUT_bit.P1OUT_0
+#define Sdo P1IN_bit.P1IN_2
+#define Sck P1OUT_bit.P1OUT_3
+#define Ntc P1OUT_bit.P1OUT_7
 
 #define TIMEOUT 1000
 #define SENSOR 'A'      // sensor number
@@ -24,13 +24,12 @@
 #define TEMP_MIN_TEMP -40
 #define TEMP_MAX_TEMP 79
 #define TEMP_TABLE_SIZE 120
-#define PACKET_LEN      4
 
 unsigned int i;
 unsigned int transmit_timer=1000;
-unsigned int rf12_crc;         // running crc value
 char buffer [4];
 long IntDegC;
+long PreviousIntDegC;
 long temp;
 
 /*static const unsigned int Temperature_Lookup[] = {
@@ -106,8 +105,7 @@ void RFM12_Init (void)
   Sck = 0;
   Spi16(0x80e7);      //El , Ef , 11.5pf, 868 MHz band
   Spi16(0x82d9);      //!er , !ebb , Et , Es , Ex , !eb , !ew , Dc
-  //Spi16(0xa67c);      // 868,3 MHz
-  Spi16(0xa640);      // 868,0 MHz
+  Spi16(0xa67c);      // 868,3 MHz
   Spi16(0xc647);      // 4.8kbps
   //Spi16(0xc691);      // 2.4kbps
   Spi16(0x94a4);      // Vdi , Fast , 134 kHz , 0dbm , -79dbm
@@ -115,6 +113,8 @@ void RFM12_Init (void)
   Spi16(0xca81);      // Fifo8 , Sync , !ff , Dr
   Spi16(0xc483);      // @pwr , No Rstric , !st , !fi , Oe , En
   Spi16(0x9850);      // ±90 kHz , power - 0 dB (maximum)
+  //Spi16(0x9820);      // ±45 kHz , power - 0 dB (maximum)
+ // Spi16(0x9857);      // ±90 kHz , power - 21 dB (minimum)
   Spi16(0xe000);
   Spi16(0xc800);
   Spi16(0xc000);      // 1 MHz , 2.2V
@@ -136,32 +136,14 @@ unsigned int Wait_rfm12( unsigned int Timeout)
   if (T < Timeout) return 1; else return 0;
 }
 
-//Polynomial: x^16 + x^15 + x^2 + 1 (0xa001)
-//Initial value: 0xffff
-unsigned int crc16_update(unsigned int crc, unsigned char a)
-{
-    unsigned char i;
-
-    crc ^= a;
-    for (i = 0; i < 8; ++i)
-    {
-        if (crc & 1)
-            crc = (crc >> 1) ^ 0xa001;
-        else
-            crc = (crc >> 1);
-    }
-
-    return crc;
-}
-
-/*unsigned int Send_rfm12string(char *outstring)
+unsigned int Send_rfm12string(char *outstring)
 {
   unsigned int D;
   unsigned char Checksum;
 
-  //D = Spi16(0x8239);
-  //if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  //__delay_cycles(5000);                   // wait 5 ms after RFM12 enabled
+  D = Spi16(0x8239);
+  if (Wait_rfm12(TIMEOUT) == 0) return 0;
+  __delay_cycles(5000);                   // wait 5 ms after RFM12 enabled
   D = Spi16(0x0000);                      // request status (dummy)
   if (Wait_rfm12(TIMEOUT) == 0) return 0;
   D = Spi16(0xb8aa);
@@ -197,59 +179,11 @@ unsigned int crc16_update(unsigned int crc, unsigned char a)
   if (Wait_rfm12(TIMEOUT) == 0) return 0;
   D = Spi16(0xb8aa);
   if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  //D = Spi16(0x8201);                      // set RFM12 in Sleep mode
-  //Sdi = 0;
-  return 1;
-}*/
-
-
-unsigned int Send_rfm12string(char *outstring)
-{
-  unsigned int D;
- 
-  //D = Spi16(0x8239);
-  //if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  //__delay_cycles(5000);                   // wait 5 ms after RFM12 enabled
-  D = Spi16(0x0000);                      // request status (dummy)
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb8aa);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb8aa);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb8aa);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb82d);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb8d4);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb800);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb800 + PACKET_LEN);          // data length
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xB800 + SENSOR);              // Send Sensornumber
-  while (*outstring != '\0')
-  {  
-    if (Wait_rfm12(TIMEOUT) == 0) return 0;
-    D = 0xB800 + *outstring;
-    rf12_crc = crc16_update(rf12_crc, *outstring);	
-    outstring++;
-    D = Spi16(D);
-  }
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D= 0xB800 + (rf12_crc & 0xFF);
-  D = Spi16(D);                         //Send Checksum Low
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D= 0xB800 + (rf12_crc >> 8);
-  D = Spi16(D);                         //Send Checksum High
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb8aa);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  D = Spi16(0xb8aa);
-  if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  //D = Spi16(0x8201);                      // set RFM12 in Sleep mode
-  //Sdi = 0;
+  D = Spi16(0x8201);                      // set RFM12 in Sleep mode
+  Sdi = 0;
   return 1;
 }
+
 
 int ltoa_format (char *erg, long zahl, unsigned int vk, unsigned int nk)
 { // Out-String, input long, pre-decimal digits, decimal digits, sign '+' or ' ' 
@@ -312,25 +246,24 @@ void Transmit(void)
 {
     Ntc = 1;                                // enable NTC sensor  
   
-    __delay_cycles(3000);                  // wait 3 ms
+    __delay_cycles(5000);                  // wait 5 ms
     
-    ADC10CTL1 = INCH_10 + ADC10DIV_3;         // Internal Temp Sensor ADC10CLK/4, ADC Clock=ADC10OSC
-    ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=1,5V, ADC enabled
+    //ADC10CTL1 = INCH_10 + ADC10DIV_3;         // Internal Temp Sensor ADC10CLK/4, ADC Clock=ADC10OSC
+    //ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=1,5V, ADC enabled
     
     // external temperature sensor (NTC)
-    //ADC10CTL1 = INCH_6 + ADC10DIV_3;         // ADC Channel A6, ADC10CLK/4, ADC Clock=ADC10OSC
-    //ADC10CTL0 = SREF_0 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=VCC, ADC enabled
+    ADC10CTL1 = INCH_6 + ADC10DIV_3;         // ADC Channel A6, ADC10CLK/4, ADC Clock=ADC10OSC
+    ADC10CTL0 = SREF_0 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=VCC, ADC enabled
     ADC10CTL0 |= ENC + ADC10SC;             // Sampling and conversion start
     while (ADC10CTL1 & ADC10BUSY);          // ADC10BUSY?
     temp = ADC10MEM;                        // store ADC value
       
     Ntc = 0;                                // disable NTC sensor
     
-    //IntDegC = Temperature_GetTemperature (temp); // calculate temperature, external NTC
-    //IntDegC += 50;                               // offset for transmission -> no value=zero
-   
-    IntDegC = ((temp - 673) * 423) / 1024;// Calculate temperature value, internal sensor
+    IntDegC = Temperature_GetTemperature (temp); // calculate temperature, external NTC
     IntDegC += 50;                               // offset for transmission -> no value=zero
+   
+    //IntDegC = ((temp - 673) * 423) / 1024;// Calculate temperature value, internal sensor
     
      ADC10CTL0 &= ~ENC;                      // Disable conversion
         
@@ -340,30 +273,24 @@ void Transmit(void)
      ADC10CTL0 |= ENC + ADC10SC;             // Sampling and conversion start
      while (ADC10CTL1 & ADC10BUSY);          // ADC10BUSY?
      
-      Spi16(0x8239);                         // enable RFM12   
-      __delay_cycles(3000);                  // wait 3 ms after RFM12 enabled
-     
      if (ADC10MEM < 0x311)                   // ADC10MEM = A11 < 0.65 (VCC < 2,3V) with Uref=1,5V
      {
-        Send_rfm12string("X");               // Send Battery warning message
+        Send_rfm12string("X");             // Send Battery warning message
      }
-     else 
+     else if (PreviousIntDegC != IntDegC)    // send only if new value
       {
-       ltoa_format(buffer, IntDegC, 2, 0);
-       rf12_crc = 0xFFFF;                        // crc initial value
-       rf12_crc = crc16_update(rf12_crc, 0xD4); // group ID for crc16
-       rf12_crc = crc16_update(rf12_crc, 0x00); 
-       rf12_crc = crc16_update(rf12_crc, PACKET_LEN); 
-       rf12_crc = crc16_update(rf12_crc, SENSOR); 
-       Send_rfm12string(buffer);                // send first telegram
+       ltoa_format(buffer, IntDegC, 2, 0); 
+       Send_rfm12string(buffer);            // send first time 
+       __delay_cycles(5000);                  // wait 5 ms
+       Send_rfm12string(buffer);            // send second time 
+        __delay_cycles(5000);                  // wait 5 ms
+       Send_rfm12string(buffer);            // send third time 
+       PreviousIntDegC = IntDegC;           // save new value
        }
      
     //printf ("%d\n", IntDegC);             // use as control in terminal window
     //printf ("\n");
     //printf (buffer);    
-    
-    Spi16(0x8201);                          // set RFM12 in Sleep mode
-    Sdi = 0;
      
     ADC10CTL0=0;                            // Disable ADC
     ADC10CTL1=0;
