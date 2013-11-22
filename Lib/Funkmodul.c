@@ -47,7 +47,8 @@ void RFM12_Init (void)
 
   D = Spi16(0x80e7);      //El , Ef , 11.5pf, 868 MHz band
   D = Spi16(0x82d9);      // er , ebb , !Et , Es , Ex , !eb , !ew , Dc
-  D = Spi16(0xa67c);      // 868,3 MHz
+ // D = Spi16(0xa67c);      // 868,3 MHz
+  D = Spi16(0xa640);      // 868,0 MHz
   D = Spi16(0xc647);      // 4.8kbps
   D = Spi16(0x94A1);      // Vdi , Fast , 134 kHz , 0db , -103dbm, receiver bandwidth, lna gain, rssi treshold
   D = Spi16(0xc2a9);      // Al , !ml , Dig , Dqd1

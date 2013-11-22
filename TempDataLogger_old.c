@@ -2,7 +2,7 @@
  Copyright:      Kai Riedel based on LUFA Library
  Author:         Kai Riedel
  Remarks:        AVR AT90USB1287
- Version:        22.11.2013
+ Version:        18.04.2013
  Description:    Temperature Data Logger with radio sensors
 //------------------------------------------------------------------------------*/
 
@@ -141,8 +141,7 @@ uint8_t DataReceived;
 /** radio telegram content and assigned variables */
 char recbuf[10];
 uint8_t bufferposition;
-uint16_t rf12_crc;
-uint16_t rf12_crc_calculate;
+uint8_t Checksum;
 uint8_t rec_started;
 
 /** radio timeout counters */
@@ -212,8 +211,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
         {
             sprintf(LineBuffer, "%02d%02d%02d %02d:%02d:%02d ", Day, Month, Year, Hour, Minute, Second);
             lcd_pos(2,1);
-            lcd_print_str("Sensor2:");
-            //lcd_print_str(LineBuffer);
+            lcd_print_str(LineBuffer);
         }
         else
         {
@@ -351,7 +349,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
         }
     }
 
-    if((Sensor2Received&Sensor3Received)||LCD_MODUL==2)         // transmit values to webserver only if sensor values received
+    if(Sensor2Received&Sensor3Received)         // transmit values to webserver only if sensor values received
     {
 
         if(WebEnableCounter++ == WEB_LOGGING_INTERVAL) POWER_ENABLE_Port_Write |= (1<<POWER_ENABLE);      // activate web module LDO
@@ -366,7 +364,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
             Serial_Init(9600, 0);   // initialize uart
             _delay_ms(100);
 
-            Serial_TxString("PUT /v2/feeds/");
+            /*Serial_TxString("PUT /v2/feeds/");
             Serial_TxString(FEED_ID);
             Serial_TxString(".csv HTTP/1.1\r\n");
             Serial_TxString("Host: api.xively.com\r\n");
@@ -385,9 +383,9 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 
             Serial_TxString("1,");
             sprintf(LineBuffer, "%3d\r\n", Humidity);
-            Serial_TxString(LineBuffer);
+            Serial_TxString(LineBuffer);*/
 
-           /* Serial_TxString("POST /update HTTP/1.1\n");
+            Serial_TxString("POST /update HTTP/1.1\n");
             Serial_TxString("Host: api.thingspeak.com\n");
             Serial_TxString("Connection: close\n");
             Serial_TxString("X-THINGSPEAKAPIKEY: ");
@@ -404,7 +402,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
 
             Serial_TxString("&field2=");
             sprintf(LineBuffer, "%3d", Humidity);
-            Serial_TxString(LineBuffer);*/
+            Serial_TxString(LineBuffer);
 
             if (LCD_MODUL==4)
             {
@@ -530,42 +528,22 @@ int main(void)
 	}
 }
 
-/** CRC16 calculate routine*/
-/**Polynomial: x^16 + x^15 + x^2 + 1 (0xa001)
-Initial value: 0xffff*/
-uint16_t crc16_update(uint16_t crc, uint8_t a)
-{
-    uint8_t i;
-
-    crc ^= a;
-    for (i = 0; i < 8; ++i)
-    {
-        if (crc & 1)
-            crc = (crc >> 1) ^ 0xa001;
-        else
-            crc = (crc >> 1);
-    }
-
-    return crc;
-}
-
 /** Receive telegram from radio modul*/
 void RadioReceive(void)
 {
     cli();                                          // disable all interrupts
    	DataReceived = (uchar) Spi16(0xb000);           // receiver FIFO read command
 
-	if ((bufferposition>recbuf[0]+2)&rec_started)	// all bytes received
+	if ((DataReceived == ETX)&rec_started)			// ETX -> end of telegram
     {
-		rf12_crc_calculate = recbuf[6];
-		rf12_crc_calculate = (rf12_crc_calculate << 8) + recbuf[5];
-
-		if (rf12_crc == rf12_crc_calculate) 		// Checksum OK -> display new value
+		bufferposition--;							// array last position (contents checksum)
+		Checksum -= recbuf[bufferposition];			// correct checksum (the last value in array is the checksum)
+		if (Checksum == recbuf[bufferposition]) 	// Checksum OK -> display new value
 		{
-		   recbuf[bufferposition-2] = '\0';			// set end of string, delete checksum
-			if (recbuf[1]=='C')					    // Sensor A
+		   recbuf[bufferposition] = '\0';			// set end of string, delete checksum
+			if (recbuf[0]=='A')					    // Sensor A
 			{
-			        Sensor2Value = atoi(&recbuf[2]);		 // convert in integer
+			        Sensor2Value = atoi(&recbuf[1]);		 // convert in integer
 			        if (Sensor2Value != 0)
                     {
                         Sensor2Value -= 50;                       // check if conversion is ok, correct value with offset
@@ -573,7 +551,7 @@ void RadioReceive(void)
                     }
 			        else Sensor2Value = Sensor2PreviousValue;   // wrong values received
 
-			        if (recbuf[2] == 'X')                         // display battery warning message
+			        if (recbuf[1] == 'X')                         // display battery warning message
 			        {
 			            lcd_pos(2,10);
 			            lcd_print_str("BATTERY    ");
@@ -594,9 +572,9 @@ void RadioReceive(void)
 
              Sensor2Timeout = 0;								 // reset timeout
 			}
-			if (recbuf[1]=='B')					                    // Sensor B
+			if (recbuf[0]=='B')					                    // Sensor B
 			{
-			        Sensor3Value = atoi(&recbuf[2]);		 		// convert in integer
+			        Sensor3Value = atoi(&recbuf[1]);		 		// convert in integer
 			        if (Sensor3Value != 0)
                     {
                         Sensor3Value -= 50;                         // check if conversion is ok, correct value with offset
@@ -604,7 +582,7 @@ void RadioReceive(void)
                     }
                     else Sensor3Value = Sensor3PreviousValue;       // // wrong values received
 
-                    if (recbuf[2] == 'X')                         // display battery warning message
+                    if (recbuf[1] == 'X')                         // display battery warning message
 			        {
 			            lcd_pos(3,10);
                         lcd_print_str("BATTERY    ");
@@ -625,24 +603,31 @@ void RadioReceive(void)
             }
 		}
         RestartFifoFill_receiver();
+	    //Disable_receiver();
 		rec_started = 0;
 		bufferposition = 0;
+		//Enable_receiver();
     }
     else
     {
-		if (DataReceived == STX) 						// STX -> start of telegram -> save following characters
+		if (DataReceived == STX) 				// STX -> start of telegram -> save following characters
 		 {
 			rec_started = 1;
-			rf12_crc  = 0xFFFF;							// crc initial value
- 			rf12_crc  = crc16_update(rf12_crc, 0xD4); 	// group ID for crc16
-      		rf12_crc  = crc16_update(rf12_crc, 0x00); 
-       	}
-		else if (rec_started)						 	// save telegram content, n -> next array position
+			Checksum = 0;
+		 }
+		else if ((rec_started) && (bufferposition < 6)) 	// save telegram content, n -> next array position
 		{
-		recbuf[bufferposition] = DataReceived;
-		if (bufferposition <= recbuf[0]) rf12_crc =  crc16_update(rf12_crc, DataReceived);
-		bufferposition++;
+		recbuf[bufferposition++] = DataReceived;
+		Checksum += DataReceived;
 		}
+		else if (bufferposition>=5)					// over 5 characters received -> reject telegram
+		{
+        RestartFifoFill_receiver();
+		//Disable_receiver();
+		rec_started = 0;
+		bufferposition = 0;
+		//Enable_receiver();
+ 	    }
 	}
 	sei();                                          // enable all interrupts
 }
@@ -746,7 +731,7 @@ void SetupHardware(void)
 		int8_t Temperature=0;
         uint8_t Humidity=0;
 
-       	lcd_print_str("Datalogger V1.2");
+       	lcd_print_str("Datalogger V1.1");
 		lcd_pos (2,1);
 		lcd_print_str("Kai Riedel, 2013");
 
@@ -774,10 +759,6 @@ void SetupHardware(void)
         {
             lcd_print_value (Temperature+Sensor1Correction_SRAM, "#C", '+', 1, 8, 2, 0);
             lcd_print_value (Humidity, "% ", '/', 1, 13, 2, 0);
-            lcd_pos(2,1);
-            lcd_print_str(Sensor2Name_SRAM);
-            lcd_pos(2,10);
-            lcd_print_str("---#C  ");
         }
 
         if (LCD_MODUL==4)

@@ -48,7 +48,7 @@ extern void RestartFifoFill_receiver(void);
 #define SCK 	3 		//Pin für SCK
 #define VDD     4       //Pin für VDD - RFM12
 
-#define STX 0x02
+#define STX 0x00
 #define ETX 0x03
 #define CR  0x0d
 #define LF  0x0a

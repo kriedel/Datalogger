@@ -114,14 +114,16 @@
 		#define LOCAL 7
 
         /** Define LCD Modul: 2 -> 2*16 Char, 4 -> 4*20 Char */
-        #define LCD_MODUL               4
+        #define LCD_MODUL               2
 
         /** Define parameters for cosm datalogging */
-        //#define API_KEY "XXXX-YYYYYY-ZZZZ" // Xively API key
-        //#define writeAPIKey "ABCD" // ThingSpeak API key Office
-        #define writeAPIKey "ABCDEFDG" // ThingSpeak API key Home
-        //#define FEED_ID "123456" // Xively feed ID Büro
-        //#define FEED_ID "123456" // Xively feed ID Haus
+        #define API_KEY "t5oM-cXVCGkP-Rbb3m8xa8Avwc-SAKxJV0l1bVUvaEdoTT0g" // Xively API key
+        //ThingSpeak Server: 184.106.153.149, raw tcp, match string: POST
+        //Xively Server: old 216.52.233.121, new 64.94.18.120, match string: PUT
+        //#define writeAPIKey "HKAFWXK0MVKBI8CD" // ThingSpeak API key Office
+        //#define writeAPIKey "63GNEHB17QDE685X" // ThingSpeak API key Home
+        #define FEED_ID "116164" // Xively feed ID Büro
+        //#define FEED_ID "126888" // Xively feed ID Haus
         #define USER_AGENT "Datalogger_One"
 
         /** Define Power Enable for Wiznet module WIZ107SR -> PB4 */
@@ -188,6 +190,8 @@
 
 		void RadioReceive(void);
 		void GetCorrectionValues(void);
+		uint16_t crc16_update(uint16_t crc, uint8_t a);
+
 
 #endif
 
