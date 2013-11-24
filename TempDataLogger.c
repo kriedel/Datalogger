@@ -212,7 +212,7 @@ ISR(TIMER1_COMPA_vect, ISR_BLOCK)
         {
             sprintf(LineBuffer, "%02d%02d%02d %02d:%02d:%02d ", Day, Month, Year, Hour, Minute, Second);
             lcd_pos(2,1);
-            lcd_print_str("Sensor2:");
+            lcd_print_str("Sensor 2:");
             //lcd_print_str(LineBuffer);
         }
         else
@@ -563,7 +563,7 @@ void RadioReceive(void)
 		if (rf12_crc == rf12_crc_calculate) 		// Checksum OK -> display new value
 		{
 		   recbuf[bufferposition-2] = '\0';			// set end of string, delete checksum
-			if (recbuf[1]=='C')					    // Sensor A
+			if (recbuf[1]=='A')					    // Sensor A
 			{
 			        Sensor2Value = atoi(&recbuf[2]);		 // convert in integer
 			        if (Sensor2Value != 0)
@@ -578,7 +578,7 @@ void RadioReceive(void)
 			            lcd_pos(2,10);
 			            lcd_print_str("BATTERY    ");
 			        }
-               else lcd_print_value (Sensor2Value, "#C     ", '+', 2, 10, 2, 0);
+                    else lcd_print_value (Sensor2Value, "#C     ", '+', 2, 10, 2, 0);
 
               if (Sensor2Received)
               {
@@ -609,7 +609,7 @@ void RadioReceive(void)
 			            lcd_pos(3,10);
                         lcd_print_str("BATTERY    ");
 			        }
-              else lcd_print_value (Sensor3Value, "#C     ", '+', 3, 10, 2, 0);
+                    else lcd_print_value (Sensor3Value, "#C     ", '+', 3, 10, 2, 0);
               if (Sensor3Received)
               {
                   if (Sensor3Value < Sensor3MinValue) Sensor3MinValue = Sensor3Value;
@@ -631,17 +631,23 @@ void RadioReceive(void)
     else
     {
 		if (DataReceived == STX) 						// STX -> start of telegram -> save following characters
-		 {
+		{
 			rec_started = 1;
 			rf12_crc  = 0xFFFF;							// crc initial value
  			rf12_crc  = crc16_update(rf12_crc, 0xD4); 	// group ID for crc16
-      		rf12_crc  = crc16_update(rf12_crc, 0x00); 
+      		rf12_crc  = crc16_update(rf12_crc, 0x00);
        	}
-		else if (rec_started)						 	// save telegram content, n -> next array position
+		else if ((rec_started) && (bufferposition < 10))	// save telegram content, n -> next array position
 		{
 		recbuf[bufferposition] = DataReceived;
 		if (bufferposition <= recbuf[0]) rf12_crc =  crc16_update(rf12_crc, DataReceived);
 		bufferposition++;
+		}
+		else if (bufferposition>=10)					// over 10 characters received -> reject telegram
+		{
+        RestartFifoFill_receiver();
+		rec_started = 0;
+		bufferposition = 0;
 		}
 	}
 	sei();                                          // enable all interrupts
