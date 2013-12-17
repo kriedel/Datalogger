@@ -18,7 +18,7 @@
 #define Ntc P1OUT_bit.P7
 
 #define TIMEOUT 1000
-#define SENSOR 'A'      // sensor number
+#define SENSOR 'B'      // sensor number
 //#define TEMP_MIN_TEMP -21
 //#define TEMP_MAX_TEMP 98
 #define TEMP_MIN_TEMP -40
@@ -154,6 +154,7 @@ unsigned int crc16_update(unsigned int crc, unsigned char a)
     return crc;
 }
 
+// old telegram
 /*unsigned int Send_rfm12string(char *outstring)
 {
   unsigned int D;
@@ -202,14 +203,17 @@ unsigned int crc16_update(unsigned int crc, unsigned char a)
   return 1;
 }*/
 
-
+// new telegram
 unsigned int Send_rfm12string(char *outstring)
 {
   unsigned int D;
  
-  //D = Spi16(0x8239);
-  //if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  //__delay_cycles(5000);                   // wait 5 ms after RFM12 enabled
+  rf12_crc = 0xFFFF;                        // crc initial value
+  rf12_crc = crc16_update(rf12_crc, 0xD4); // group ID for crc16
+  rf12_crc = crc16_update(rf12_crc, 0x00); 
+  rf12_crc = crc16_update(rf12_crc, PACKET_LEN); 
+  rf12_crc = crc16_update(rf12_crc, SENSOR); 
+       
   D = Spi16(0x0000);                      // request status (dummy)
   if (Wait_rfm12(TIMEOUT) == 0) return 0;
   D = Spi16(0xb8aa);
@@ -246,8 +250,7 @@ unsigned int Send_rfm12string(char *outstring)
   if (Wait_rfm12(TIMEOUT) == 0) return 0;
   D = Spi16(0xb8aa);
   if (Wait_rfm12(TIMEOUT) == 0) return 0;
-  //D = Spi16(0x8201);                      // set RFM12 in Sleep mode
-  //Sdi = 0;
+
   return 1;
 }
 
@@ -314,22 +317,23 @@ void Transmit(void)
   
     __delay_cycles(3000);                  // wait 3 ms
     
-    ADC10CTL1 = INCH_10 + ADC10DIV_3;         // Internal Temp Sensor ADC10CLK/4, ADC Clock=ADC10OSC
-    ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=1,5V, ADC enabled
+    // MSP430F2012 internal temperature sensor
+    //ADC10CTL1 = INCH_10 + ADC10DIV_3;         // Internal Temp Sensor ADC10CLK/4, ADC Clock=ADC10OSC
+    //ADC10CTL0 = SREF_1 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=1,5V, ADC enabled
     
     // external temperature sensor (NTC)
-    //ADC10CTL1 = INCH_6 + ADC10DIV_3;         // ADC Channel A6, ADC10CLK/4, ADC Clock=ADC10OSC
-    //ADC10CTL0 = SREF_0 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=VCC, ADC enabled
+    ADC10CTL1 = INCH_6 + ADC10DIV_3;         // ADC Channel A6, ADC10CLK/4, ADC Clock=ADC10OSC
+    ADC10CTL0 = SREF_0 + ADC10SHT_3 + REFON + ADC10ON; //64 x ADC10CLKs, Uref=VCC, ADC enabled
     ADC10CTL0 |= ENC + ADC10SC;             // Sampling and conversion start
     while (ADC10CTL1 & ADC10BUSY);          // ADC10BUSY?
     temp = ADC10MEM;                        // store ADC value
       
     Ntc = 0;                                // disable NTC sensor
     
-    //IntDegC = Temperature_GetTemperature (temp); // calculate temperature, external NTC
-    //IntDegC += 50;                               // offset for transmission -> no value=zero
-   
-    IntDegC = ((temp - 673) * 423) / 1024;// Calculate temperature value, internal sensor
+    IntDegC = Temperature_GetTemperature (temp); // calculate temperature, external NTC
+       
+    //IntDegC = ((temp - 673) * 423) / 1024;    // Calculate temperature value, internal sensor
+    
     IntDegC += 50;                               // offset for transmission -> no value=zero
     
      ADC10CTL0 &= ~ENC;                      // Disable conversion
@@ -345,17 +349,16 @@ void Transmit(void)
      
      if (ADC10MEM < 0x311)                   // ADC10MEM = A11 < 0.65 (VCC < 2,3V) with Uref=1,5V
      {
-        Send_rfm12string("X");               // Send Battery warning message
+        Send_rfm12string("XXX");             // Send Battery warning message
      }
      else 
       {
        ltoa_format(buffer, IntDegC, 2, 0);
-       rf12_crc = 0xFFFF;                        // crc initial value
-       rf12_crc = crc16_update(rf12_crc, 0xD4); // group ID for crc16
-       rf12_crc = crc16_update(rf12_crc, 0x00); 
-       rf12_crc = crc16_update(rf12_crc, PACKET_LEN); 
-       rf12_crc = crc16_update(rf12_crc, SENSOR); 
-       Send_rfm12string(buffer);                // send first telegram
+       Send_rfm12string(buffer);                // send telegram three times
+       __delay_cycles(2000);                    // wait 3 ms
+       Send_rfm12string(buffer);                
+       __delay_cycles(2000);                    
+       Send_rfm12string(buffer);                
        }
      
     //printf ("%d\n", IntDegC);             // use as control in terminal window
